@@ -16,6 +16,12 @@ return new class extends Migration
             $table->datetime('dataHora');
             $table->string('status', 20);
             $table->string('motivo', 200);
+             $table->foreignId('pacienteID')
+                ->constrained('Paciente') // on(nome da tabela de origem)
+                ->onDelete('cascade'); 
+            $table->foreignId('medicoID')
+                ->constrained('Medico') // on(nome da tabela de origem)
+                ->onDelete('cascade'); 
             $table->timestamps();
         });
     }

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Models\User;
 use App\Models\Paciente;
 use App\Http\Request\StorePacienteRequest;
 
@@ -22,7 +21,7 @@ class PacienteController extends Controller
         $props = $request->get('props','id');
         $search = $request->get('search','');
 
-        $query = Paciente::select('id', 'name', 'dataNascimento', 'endereco', 'telefone', 'email')
+        $query = Paciente::select('id', 'name', 'dataNascimento', 'endereco', 'telefone', 'email', 'created_at', 'updated_at')
             ->whereNull('deleted_at')
             ->orderBy($props, $dir);
 
@@ -61,7 +60,7 @@ class PacienteController extends Controller
             'dataNascimento'=>'required|string|max:6',
             'endereco'=>'required|string|max:200',
             'telefone'=>'required|string|max:20',
-            'email'=>'required|string|email|max:100|unique:users,email',
+            'email'=>'required|string|email|max:100|unique:users,email'
         ]);
 
         if ($validator->fails()){

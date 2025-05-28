@@ -12,10 +12,9 @@ class LoginController extends Controller
     public function login(Request $request){
         $email = $request->email;
         $password = $request->password;
+        $user = User::where('email', $email )->first();
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!user){
+        if (!$user){
             return response()->json([
                 'message'=>'Email não encontrado',
             ]);
@@ -23,15 +22,25 @@ class LoginController extends Controller
 
         if (!Hash::check($password, $user->password)){
             return response()->json([
-                'message'=>'Senha do usuario invalida!',
+                'message'=>'Senha do usuário inválida',
             ]);
         }
 
-        $token = $user->createToken($user->name)->plainTextToken();
+        $token = $user->createToken($user->name)->plainTextToken;
 
         return response()->json([
-            'email'=>$email,
+            'user'=>$user,
             'token'=>$token,
         ]);
+    }
+
+    public function logout(Request $request){
+        $email = $request->email;
+        $user = User::where('email', $email )->first();
+        $user->tokens()->delete();
+
+        return response()->json([
+            'message'=>'Logout realizado com sucesso!',
+        ], 204);
     }
 }

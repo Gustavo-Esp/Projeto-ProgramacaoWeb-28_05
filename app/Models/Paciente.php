@@ -24,13 +24,15 @@ class Paciente extends Model
         "created_at",
     ];
 
-
-
-    public function paciente(){
-        $this->belongsTo(User::class);
+    public function pagamentos(){
+        $this->hasMany(Pagamento::class);
     }
 
     public function consultas(){
-        $this->hasMany(EditoraLivroAutor::class);
+        $this->hasMany(Consulta::class);
+    }
+
+    public function prontuariosMedico(){
+        $this->hasMany(prontuarioMedico::class);
     }
 }

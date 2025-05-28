@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Models\User;
+use App\Models\ProntuarioMedico;
 
 class ProntuarioMedicoController extends Controller
 {
@@ -15,12 +15,12 @@ class ProntuarioMedicoController extends Controller
     {
 
         $page = $request->get('page',1);
-        $pageSize = $request->get('pageSize',5);
+        $pageSize = $request->get('pageSize',10);
         $dir = $request->get('dir','asc');
         $props = $request->get('props','id');
         $search = $request->get('search','');
 
-        $query = ProntuarioMedico::select('id', 'dataHora', 'descricao', 'prescricao')
+        $query = ProntuarioMedico::select('id', 'dataHora', 'descricao', 'prescricao', 'pacienteID', 'medicoID', 'created_at', 'updated_at')
             ->whereNull('deleted_at')
             ->orderBy($props, $dir);
 
@@ -58,6 +58,8 @@ class ProntuarioMedicoController extends Controller
             'dataHora'=>'required|string|max:6',
             'descricao'=>'required|string|max:500',
             'prescricao'=>'required|string|max:500',
+            'pacienteID'=>'required|integer|exists:pacientes,id',
+            'medicoID'=>'required|integer|exists:medicos,id',
         ]);
 
         if ($validator->fails()){
@@ -72,6 +74,8 @@ class ProntuarioMedicoController extends Controller
             'dataHora'=>$request->dataHora,
             'descricao'=>$request->descricao,
             'prescricao'=>$request->prescricao,
+            'pacienteID'=>$request->pacienteID,
+            'medicoID'=>$request->medicoID,
         ]);
 
         return response()->json([
@@ -110,6 +114,8 @@ class ProntuarioMedicoController extends Controller
             'dataHora'=>'required|string|max:6',
             'descricao'=>'required|string|max:500',
             'prescricao'=>'required|string|max:500',
+            'pacienteID'=>'required|integer|exists:pacientes,id',
+            'medicoID'=>'required|integer|exists:medicos,id'
         ]);
 
         if ($validator->fails()){
@@ -133,6 +139,8 @@ class ProntuarioMedicoController extends Controller
         $data->dataHora = $request->dataHora ?? $data->dataHora;
         $data->descricao = $request->descricao ?? $data->descricao;
         $data->prescricao = $request->prescricao ?? $data->prescricao;
+        $data->pacienteID = $request->pacienteID ?? $data->pacienteID;
+        $data->medicoID = $request->medicoID ?? $data->medicoID;
 
         /*if ($request->has('password')){
             $data->password = Hash::make($request->password);

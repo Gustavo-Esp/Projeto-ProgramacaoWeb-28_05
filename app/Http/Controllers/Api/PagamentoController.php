@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Models\User;
+use App\Models\Pagamento;
 
 class PagamentoController extends Controller
 {
@@ -15,12 +15,12 @@ class PagamentoController extends Controller
     {
 
         $page = $request->get('page',1);
-        $pageSize = $request->get('pageSize',5);
+        $pageSize = $request->get('pageSize',10);
         $dir = $request->get('dir','asc');
         $props = $request->get('props','id');
         $search = $request->get('search','');
 
-        $query = Pagamento::select('id', 'dataHora', 'valor', 'metodoPagamento')
+        $query = Pagamento::select('id', 'dataHora', 'valor', 'metodoPagamento', 'pacienteID', 'consultaID' ,'created_at', 'updated_at')
             ->whereNull('deleted_at')
             ->orderBy($props, $dir);
 
@@ -58,6 +58,8 @@ class PagamentoController extends Controller
             'dataHora'=>'required|string|max:6',
             'valor'=>'required|numeric|max:50',
             'metodoPagamento'=>'required|string|max:20',
+            'pacienteID'=>'required|integer|exists:pacientes,id',
+            'consultaID'=>'required|integer|exists:consultas,id',
         ]);
 
         if ($validator->fails()){
@@ -72,6 +74,8 @@ class PagamentoController extends Controller
             'dataHora'=>$request->dataHora,
             'valor'=>$request->valor,
             'metodoPagamento'=>$request->metodoPagamento,
+            'pacienteID'=>$request->pacienteID,
+            'consultaID'=>$request->consultaID,
         ]);
 
         return response()->json([
@@ -110,6 +114,8 @@ class PagamentoController extends Controller
             'dataHora'=>'required|string|max:6',
             'valor'=>'required|numeric|max:50',
             'metodoPagamento'=>'required|string|max:20',
+            'pacienteID'=>'required|integer|exists:pacientes,id',
+            'consultaID'=>'required|integer|exists:consultas,id',
         ]);
 
         if ($validator->fails()){
@@ -133,6 +139,8 @@ class PagamentoController extends Controller
         $data->dataHora = $request->dataHora ?? $data->dataHora;
         $data->valor = $request->valor ?? $data->valor;
         $data->metodoPagamento = $request->metodoPagamento ?? $data->metodoPagamento;
+        $data->pacienteID = $request->pacienteID ?? $data->pacienteID;
+        $data->consultaID = $request->consultaID ?? $data->consultaID;
 
         /*if ($request->has('password')){
             $data->password = Hash::make($request->password);

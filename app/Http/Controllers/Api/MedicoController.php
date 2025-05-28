@@ -15,12 +15,12 @@ class MedicoController extends Controller
     {
 
         $page = $request->get('page',1);
-        $pageSize = $request->get('pageSize',5);
+        $pageSize = $request->get('pageSize',10);
         $dir = $request->get('dir','asc');
         $props = $request->get('props','id');
         $search = $request->get('search','');
 
-        $query = Medico::select('id', 'name', 'especialidade', 'crm', 'telefone', 'email')
+        $query = Medico::select('id', 'nome', 'especialidade', 'crm', 'telefone', 'email', 'created_at', 'updated_at')
             ->whereNull('deleted_at')
             ->orderBy($props, $dir);
 
@@ -55,7 +55,7 @@ class MedicoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'name'=>'required|string|max:100',
+            'nome'=>'required|string|max:100',
             'especialidade'=>'required|string|max:50',
             'crm'=>'required|string|max:20',
             'telefone'=>'required|string|max:20',
@@ -71,7 +71,7 @@ class MedicoController extends Controller
         }
 
         $data = Medico::create([
-            'name'=>$request->name,
+            'nome'=>$request->nome,
             'especialidade'=>$request->especialidade,
             'crm'=>$request->crm,
             'telefone'=>$request->telefone,
@@ -111,7 +111,7 @@ class MedicoController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(),[
-            'name'=>'required|string|max:100',
+            'nome'=>'required|string|max:100',
             'especialidade'=>'required|string|max:50',
             'crm'=>'required|string|max:20',
             'telefone'=>'required|string|max:20',
@@ -136,7 +136,7 @@ class MedicoController extends Controller
             ],404);
         }
 
-        $data->name = $request->name ?? $data->name;
+        $data->nome = $request->nome ?? $data->nome;
         $data->especialidade = $request->especialidade ?? $data->especialidade;
         $data->crm = $request->crm ?? $data->crm;
         $data->telefone = $request->telefone ?? $data->telefone;

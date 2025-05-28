@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Models\User;
+use App\Models\Consulta;
 
 class ConsultaController extends Controller
 {
@@ -15,12 +15,12 @@ class ConsultaController extends Controller
     {
 
         $page = $request->get('page',1);
-        $pageSize = $request->get('pageSize',5);
+        $pageSize = $request->get('pageSize',10);
         $dir = $request->get('dir','asc');
         $props = $request->get('props','id');
         $search = $request->get('search','');
 
-        $query = Consulta::select('id', 'dataHora', 'status', 'motivo')
+        $query = Consulta::select('id', 'dataHora', 'status', 'motivo', 'pacienteID', 'medicoID', 'created_at', 'updated_at')
             ->whereNull('deleted_at')
             ->orderBy($props, $dir);
 
@@ -58,6 +58,8 @@ class ConsultaController extends Controller
             'dataHora'=>'required|string|max:6',
             'status'=>'required|string|max:20',
             'motivo'=>'required|string|max:200',
+            'pacienteID'=>'required|integer|exists:pacientes,id',
+            'medicoID'=>'required|integer|exists:medicos,id',
         ]);
 
         if ($validator->fails()){
@@ -72,6 +74,8 @@ class ConsultaController extends Controller
             'dataHora'=>$request->dataHora,
             'status'=>$request->status,
             'motivo'=>$request->motivo,
+            'pacienteID'=>$request->pacienteID,
+            'medicoID'=>$request->medicoID,
         ]);
 
         return response()->json([
@@ -87,7 +91,7 @@ class ConsultaController extends Controller
 
         if(!$data){
             throw new HttpResponseException(
-                response()->json('Consulta não localizado'),
+                response()->json('Consulta não localizada'),
                 404,
             );
         }
@@ -110,6 +114,8 @@ class ConsultaController extends Controller
             'dataHora'=>'required|string|max:6',
             'status'=>'required|string|max:20',
             'motivo'=>'required|string|max:200',
+            'pacienteID'=>'required|int',
+            'medicoID'=>'required|int'
         ]);
 
         if ($validator->fails()){
@@ -133,6 +139,8 @@ class ConsultaController extends Controller
         $data->dataHora = $request->dataHora ?? $data->dataHora;
         $data->status = $request->status ?? $data->status;
         $data->motivo = $request->motivo ?? $data->motivo;
+        $data->pacienteID = $request->pacienteID ?? $data->pacienteID;
+        $data->medicoID = $request->medicoID ?? $data->medicoID;
 
         /*if ($request->has('password')){
             $data->password = Hash::make($request->password);
