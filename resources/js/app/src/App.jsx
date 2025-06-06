@@ -1,5 +1,6 @@
+import './App.css'
 import ContextProvider from './context/ContextProvider'
-import Rotas from './routes/Rotas'
+import Rotas from './routes/Routes'
 
 
 function App() {

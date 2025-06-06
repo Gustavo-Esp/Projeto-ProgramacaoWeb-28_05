@@ -10,7 +10,7 @@ export default function DefaultLayout({children})
     const navigate = useNavigate();
     
     if (!token){
-        return <Navigate to="/login"/>
+        //return <Navigate to="/login"/>
     }
 
     const onLogout = (e) => {

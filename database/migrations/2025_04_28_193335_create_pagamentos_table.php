@@ -17,10 +17,10 @@ return new class extends Migration
             $table->decimal('valor', 18, 2);
             $table->string('metodoPagamento', 20);
              $table->foreignId('pacienteID')
-                ->constrained('Paciente') // on(nome da tabela de origem)
+                ->constrained('pacientes') // on(nome da tabela de origem)
                 ->onDelete('cascade'); 
             $table->foreignId('consultaID')
-                ->constrained('Consulta') // on(nome da tabela de origem)
+                ->constrained('consultas') // on(nome da tabela de origem)
                 ->onDelete('cascade'); 
             $table->timestamps();
         });

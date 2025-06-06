@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('descricao', 500);
             $table->string('prescricao', 500);
              $table->foreignId('pacienteID')
-                ->constrained('Paciente') // on(nome da tabela de origem)
+                ->constrained('pacientes') // on(nome da tabela de origem)
                 ->onDelete('cascade'); 
             $table->foreignId('medicoID')
-                ->constrained('Medico') // on(nome da tabela de origem)
+                ->constrained('medicos') // on(nome da tabela de origem)
                 ->onDelete('cascade'); 
             $table->timestamps();
         });
