@@ -1,119 +1,132 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import axiosClient from '../../axiosClient';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import {Fragment, useEffect, useState} from "react"
+import axiosClient from "../../axiosClient";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import Input from "../../components/input/Input";
+import { useValidarDadosMedico } from "../../rules/MedicoValidationRules";
 
-function MedicoFormUpdate()
-{
+export default function MedicoFormUpdate(){
+
     const navigate = useNavigate();
 
-    const [medico, setMedico] = useState({
-        id:null,
-        nome:'',
-        especialidade:'',
-        crm:'',
-        telefone:'',
-        email:'',
-    });
+    const   {
+            model,
+            setModel,
+            error,
+            formValid,
+            handleBlurField,
+            handleChangeField,
+    } = useValidarDadosMedico();
 
     const {id} = useParams();
 
-    if (id)
-    {
-        useEffect(() => {
+    useEffect(() => {
+        if (id) {
             axiosClient.get(`/medico/show/${id}`)
-            .then(({data}) =>{
-                setMedico(data.data);
-                //console.log(data.data);
-            }).catch((error)=>{
-                console.log(error);
-            })
-        },[id]);
-    }
+                .then(({ data }) => {
+                    setModel(data.data);
+                }).catch((error) => {
+                    console.log(error);
+                });
+        }
+    }, [id]);
 
-    // Pega informações do Servidor
-    axiosClient.get(`/medico/show/${id}`)
-                .then(({data})=>{
-                   //console.log(data.data); 
-                })
-                .catch();
-
-    // Função do tipo Anônima
     const onSubmit = (e) => {
+
         e.preventDefault();
-        axiosClient.put(`/medico/update/${id}`, medico)
-            .then(() =>{
-                setMedico({});
-                console.log('Medico alterado com sucesso');
-                navigate('/medico/index')
+
+        if(formValid()){
+            const updatedModel = { ...model };
+            axiosClient.put(`/medico/update/${id}`, updatedModel)
+                .then(()=>{
+                    setModel({});
+                    console.log("Medico alterado com sucesso");
+                    navigate('/medico/index')
             }).catch((error)=>{
                 console.log(error);
-            })
+            });
+        }
+        else{
+            console.log("Não foi possível alterar o Medico");
+        }
+
     }
-    
+
     return(
         <Fragment>
             <div className="display">
                 <div className="card animated fadeinDown">
-                    {medico.id && <h1>Alteração de Medico: { medico.nome}</h1>}
-
+                    { model.id && <h1>Alteração do Medico</h1> }
                     <form onSubmit={(e)=>onSubmit(e)}>
-                        <input
-                            type="text"
-                            value={medico.nome}
-                            placeholder="Nome do Medico"
-                            onChange={
-                                e => setMedico({
-                                    ...medico, nome:e.target.value
-                                })
-                            } />
-                        <input
-                            type="text"
-                            value={medico.especialidade}
-                            placeholder="Especialidade do Medico"
-                            onChange={
-                                e => setMedico({
-                                    ...medico, especialidade:e.target.value
-                              })
-                            } />
-                        <input
-                            type="text"
-                            value={medico.crm}
-                            placeholder="CRM do Medico"
-                            onChange={
-                                e => setMedico({
-                                    ...medico, crm:e.target.value
-                                })
-                            } />
-                        <input
-                            type="text"
-                            value={medico.telefone}
-                            placeholder="Telefone do Medico"
-                            onChange={
-                                e => setMedico({
-                                    ...medico, telefone:e.target.value
-                                })
-                            } />
-                        <input
-                            type="text"
-                            value={medico.email}
-                            placeholder="Email do Medico"
-                            onChange={
-                                e => setMedico({
-                                    ...medico, email:e.target.value
-                                })
-                            } />
-                        <button className="btn btn-edit">Salvar</button>
-                        <Link
-                            type='button' 
-                            className='btn btn-cancel'
-                            to='/medico/index'>
-                                Cancelar
+                        <div className="p-20">
+                            <Input 
+                                id="nome"
+                                type="text"
+                                value={model.nome}
+                                placeholder="Nome do Medico"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.nome}
+                                mensagem={error.nomeMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="especialidade"
+                                type="text"
+                                value={model.especialidade}
+                                placeholder="Especialidade do Medico"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.especialidade}
+                                mensagem={error.especialidadeMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="crm"
+                                type="text"
+                                value={model.crm}
+                                placeholder="CRM do Medico"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.crm}
+                                mensagem={error.crmMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="telefone"
+                                type="text"
+                                value={model.telefone}
+                                placeholder="Telefone do Medico"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.telefone}
+                                mensagem={error.telefoneMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="email"
+                                type="text"
+                                value={model.email}
+                                placeholder="Email do Medico"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.email}
+                                mensagem={error.emailMensagem}
+                            />
+                        </div>
+                        <button className="btn btn-edit" to="/medico/index">
+                            Salvar
+                        </button>
+                        <Link type="button" className="btn btn-cancel" to="/medico/index">
+                            Cancelar
                         </Link>
+
                     </form>
                 </div>
             </div>
         </Fragment>
     )
 }
-
-export default MedicoFormUpdate

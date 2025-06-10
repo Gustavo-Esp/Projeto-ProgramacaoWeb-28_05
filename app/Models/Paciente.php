@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Paciente extends Model
 {
@@ -22,6 +23,7 @@ class Paciente extends Model
     protected $hidden = [
         "updated_at",
         "created_at",
+        "deleted_at",
     ];
 
     public function pagamentos(){

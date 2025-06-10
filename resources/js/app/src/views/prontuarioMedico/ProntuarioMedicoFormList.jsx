@@ -8,8 +8,7 @@ export default function ProntuarioMedicoFormList()
 
     // Função anômina na linguagem JavaScript
     const getProntuariosMedicos = () => {
-        axiosClient
-            .get('/prontuarioMedico/index')
+        axiosClient.get('/prontuarioMedico/index')
             .then(({data}) => {
                 //console.log(data.data);
                 setProntuariosMedicos(data.data);

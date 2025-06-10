@@ -1,39 +1,38 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment} from 'react'
 import axiosClient from '../../axiosClient';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
+import { useValidarDadosConsulta } from '../../rules/ConsultaValidationRules';
+import Input from '../../components/input/Input';
 
 function ConsultaFormStore()
 {
     const navigate = useNavigate();
 
-    const [consulta, setConsulta] = useState({
-        id:null,
-        dataHora:'',
-        status:'',
-        motivo:'',
-        medicoID:'',
-        pacienteID:'',
-        medico: {
-          nome:'',
-        },
-        paciente: {
-          nome:'',
-        }
-    });
+    const {
+        model,
+        error,
+        setModel,
+        formValid,
+        handleChangeField,
+        handleBlurField
+    } = useValidarDadosConsulta();
 
     // Função do tipo Anônima
     const onSubmit = (e) => {
         e.preventDefault();
-        axiosClient.post(`/consulta/store`, consulta)
+        if (formValid()) {
+            console.log("Formulário inválido");
+            axiosClient.post(`/consulta/store`, consulta)
             .then(() =>{
-                setConsulta({});
+                setModel({});
                 console.log('Consulta incluída com sucesso');
                 navigate('/consulta/index')
             }).catch((error)=>{
                 console.log(error);
             })
+        }
     }
-    
+
     return(
         <Fragment>
             <div className="display">
@@ -41,33 +40,42 @@ function ConsultaFormStore()
                     <h1>Inclusão de Consulta</h1>
 
                     <form onSubmit={(e)=>onSubmit(e)}>
-                        <input
-                            type="text"
-                            value={consulta.dataHora}
-                            placeholder="Data e hora da consulta"
-                            onChange={
-                                e => setConsulta({
-                                    ...consulta, dataHora:e.target.value
-                                })
-                            } />
-                        <input
-                            type="text"
-                            value={consulta.motivo}
-                            placeholder="Motivo da consulta"
-                            onChange={
-                                e => setConsulta({
-                                    ...consulta, motivo:e.target.value
-                              })
-                            } />
-                        <input
-                            type="text"
-                            value={consulta.status}
-                            placeholder="Status da consulta"
-                            onChange={
-                                e => setConsulta({
-                                    ...consulta, status:e.target.value
-                                })
-                            } />
+                        <div className ="p-20"> 
+                            <Input 
+                                id="dataHora"
+                                type="text"
+                                value={model.dataHora}
+                                placeholder="Data da Consulta"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.dataHora}
+                                mensagem={error.dataHoraMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="status"
+                                type="text"
+                                value={model.status}
+                                placeholder="Status da Consulta"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.status}
+                                mensagem={error.statusMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="motivo"
+                                type="text"
+                                value={model.motivo}
+                                placeholder="Motivo da Consulta"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.motivo}
+                                mensagem={error.motivoMensagem}
+                            />
+                        </div>
                         <button className="btn btn-edit">Salvar</button>
                         <Link
                             type='button' 
@@ -76,9 +84,7 @@ function ConsultaFormStore()
                                 Cancelar
                         </Link>
                     </form>
-                </div>
-
-                
+                </div> 
             </div>
         </Fragment>
     )

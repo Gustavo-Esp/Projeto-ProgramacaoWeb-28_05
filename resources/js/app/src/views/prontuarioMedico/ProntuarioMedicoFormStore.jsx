@@ -1,73 +1,81 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment} from 'react'
 import axiosClient from '../../axiosClient';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
+import { useValidarDadosProntuarioMedico } from '../../rules/ProntuarioMedicoValidationRules';
+import Input from '../../components/input/Input';
 
 function ProntuarioMedicoFormStore()
 {
     const navigate = useNavigate();
 
-    const [prontuarioMedico, setProntuarioMedico] = useState({
-        id:null,
-        dataHora:'',
-        descricao:'',
-        prescricao:'',
-        medicoID:'',
-        pacienteID:'',
-        medico: {
-          nome:'',
-        },
-        paciente: {
-          nome:'',
-        }
-    });
+    const {
+        model,
+        error,
+        setModel,
+        formValid,
+        handleChangeField,
+        handleBlurField
+    } = useValidarDadosProntuarioMedico();
 
     // Função do tipo Anônima
     const onSubmit = (e) => {
         e.preventDefault();
-        axiosClient.post(`/prontuarioMedico/store`, prontuarioMedico)
+        if (formValid()) {
+            console.log("Formulário inválido");
+            axiosClient.post(`/prontuarioMedico/store`, prontuarioMedico)
             .then(() =>{
-                setProntuarioMedico({});
-                console.log('Prontuário incluído com sucesso');
+                setModel({});
+                console.log('Prontuário Médico incluído com sucesso');
                 navigate('/prontuarioMedico/index')
             }).catch((error)=>{
                 console.log(error);
             })
+        }
     }
-    
+
     return(
         <Fragment>
             <div className="display">
                 <div className="card animated fadeinDown">
-                    <h1>Inclusão do Prontuário</h1>
+                    <h1>Inclusão de Prontuário Médico</h1>
 
                     <form onSubmit={(e)=>onSubmit(e)}>
-                        <input
-                            type="text"
-                            value={prontuarioMedico.dataHora}
-                            placeholder="Data e hora do Prontuário"
-                            onChange={
-                                e => setProntuarioMedico({
-                                    ...prontuarioMedico, dataHora:e.target.value
-                                })
-                            } />
-                        <input
-                            type="text"
-                            value={prontuarioMedico.descricao}
-                            placeholder="Descrição do Prontuário"
-                            onChange={
-                                e => setProntuarioMedico({
-                                    ...prontuarioMedico, descricao:e.target.value
-                              })
-                            } />
-                        <input
-                            type="text"
-                            value={prontuarioMedico.prescricao}
-                            placeholder="Prescrição do Prontuário"
-                            onChange={
-                                e => setProntuarioMedico({
-                                    ...prontuarioMedico, prescricao:e.target.value
-                                })
-                            } />
+                        <div className ="p-20"> 
+                            <Input 
+                                id="dataHora"
+                                type="text"
+                                value={model.dataHora}
+                                placeholder="Data do Prontuário Médico"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.dataHora}
+                                mensagem={error.dataHoraMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="descricao"
+                                type="text"
+                                value={model.descricao}
+                                placeholder="Descrição"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.descricao}
+                                mensagem={error.descricaoMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="prescricao"
+                                type="text"
+                                value={model.pescricao}
+                                placeholder="Prescrição"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.prescricao}
+                                mensagem={error.prescricaoMensagem}
+                            />
+                        </div>
                         <button className="btn btn-edit">Salvar</button>
                         <Link
                             type='button' 
@@ -76,9 +84,7 @@ function ProntuarioMedicoFormStore()
                                 Cancelar
                         </Link>
                     </form>
-                </div>
-
-                
+                </div> 
             </div>
         </Fragment>
     )

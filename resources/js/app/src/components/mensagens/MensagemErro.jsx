@@ -1,22 +1,20 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 const MensagemErro = ({
     error, mensagem
 }) => {
+    const unique = [...new Set(mensagem)];
     return (
         <Fragment>
             {
                 error && (
                     <div className="invalid-feedback">
                         {
-
-                            mensagem.map((mens, index)=>{
-                                return(
-                                    <p key={index}>
-                                        <span>{console.log(mens)}</span>
-                                    </p>
-                            )})
-                        }
+                            unique.map((mens, index) => (
+                                <p key={index}>
+                                    <span style = {{ margin:"0", color:"red"}}>{mens}</span>
+                                </p>
+                            ))}
                     </div>
                 )
             }

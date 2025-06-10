@@ -50,7 +50,7 @@ export default function PacienteFormList()
                     </thead>
                     <tbody>
                         {
-                            medicos.length > 0 ? (
+                            pacientes.length > 0 ? (
                                 pacientes && pacientes.map((paciente) => (
                                     <tr key={paciente.id}>
                                         <td>{paciente.id}</td>

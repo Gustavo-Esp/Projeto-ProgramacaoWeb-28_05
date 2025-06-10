@@ -1,73 +1,80 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment} from 'react'
 import axiosClient from '../../axiosClient';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
+import Input from '../../components/input/Input';
+import { useValidarDadosPagamento } from '../../rules/PagamentoValidationRules';
 
 function PagamentoFormStore()
 {
     const navigate = useNavigate();
 
-    const [pagamento, setPagamento] = useState({
-        id:null,
-        dataHora:'',
-        valor:'',
-        metodoPagamento:'',
-        consultaID:'',
-        pacienteID:'',
-        consulta: {
-          dataHora:'',
-        },
-        paciente: {
-          nome:'',
-        }
-    });
+    const {
+        model,
+        error,
+        setModel,
+        formValid,
+        handleChangeField,
+        handleBlurField
+    } = useValidarDadosPagamento();
 
     // Função do tipo Anônima
     const onSubmit = (e) => {
         e.preventDefault();
-        axiosClient.post(`/pagamento/store`, pagamento)
+        if (formValid()) {
+            console.log("Formulário inválido");
+            axiosClient.post(`/pagamento/store`, pagamento)
             .then(() =>{
-                setPagamento({});
+                setModel({});
                 console.log('Pagamento incluído com sucesso');
                 navigate('/pagamento/index')
             }).catch((error)=>{
                 console.log(error);
             })
+        }
     }
-    
+
     return(
         <Fragment>
             <div className="display">
                 <div className="card animated fadeinDown">
                     <h1>Inclusão de Pagamento</h1>
-
                     <form onSubmit={(e)=>onSubmit(e)}>
-                        <input
-                            type="text"
-                            value={pagamento.dataHora}
-                            placeholder="Data e hora do Pagamento"
-                            onChange={
-                                e => setPagamento({
-                                    ...pagamento, dataHora:e.target.value
-                                })
-                            } />
-                        <input
-                            type="text"
-                            value={pagamento.valor}
-                            placeholder="Valor do Pagamento"
-                            onChange={
-                                e => setPagamento({
-                                    ...pagamento, valor:e.target.value
-                              })
-                            } />
-                        <input
-                            type="text"
-                            value={pagamento.metodoPagamento}
-                            placeholder="Método de Pagamento"
-                            onChange={
-                                e => setPagamento({
-                                    ...pagamento, metodoPagamento:e.target.value
-                                })
-                            } />
+                        <div className ="p-20"> 
+                            <Input 
+                                id="dataHora"
+                                type="text"
+                                value={model.dataHora}
+                                placeholder="Data do Pagamento"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.dataHora}
+                                mensagem={error.dataHoraMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="valor"
+                                type="text"
+                                value={model.valor}
+                                placeholder="Valor do Pagamento"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.valor}
+                                mensagem={error.valorMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="metodoPagamento"
+                                type="text"
+                                value={model.metodoPagamento}
+                                placeholder="Metodo de Pagamento"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.metodoPagamento}
+                                mensagem={error.metodoPagamentoMensagem}
+                            />
+                        </div>
                         <button className="btn btn-edit">Salvar</button>
                         <Link
                             type='button' 
@@ -76,9 +83,7 @@ function PagamentoFormStore()
                                 Cancelar
                         </Link>
                     </form>
-                </div>
-
-                
+                </div> 
             </div>
         </Fragment>
     )

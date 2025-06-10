@@ -1,41 +1,43 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment} from 'react'
 import axiosClient from '../../axiosClient';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
+import { useValidarDadosUsuario } from '../../rules/UserValidationRules';
+import Input from '../../components/input/Input';
 
 function UserFormStore()
 {
     const navigate = useNavigate();
 
-    const [user, setUser] = useState({
-        id:null,
-        name:'',
-        email:'',
-    });
+    const {
+        model,
+        error,
+        setModel,
+        formValid,
+        handleChangeField,
+        handleBlurField
+    } = useValidarDadosUsuario();
 
     // Função do tipo Anônima
     const onSubmit = (e) => {
         e.preventDefault();
-        axiosClient.post(`/user/store`, user)
+        if (formValid()) {
+            console.log("Formulário inválido");
+            axiosClient.post(`/user/store`, user)
             .then(() =>{
-                setUser({});
+                setModel({});
                 console.log('Usuário incluído com sucesso');
                 navigate('/user/index')
             }).catch((error)=>{
                 console.log(error);
             })
-        //console.log(e);
-        //console.log("Passando pela função onSubmit")
+        }
     }
 
     const onCancel = (e) => {
         //e.preventDefault();
         navigate('/user/index');
-        //console.log(e);
-        //console.log("Passando pela função onSubmit")
     }
 
-
-    
     return(
         <Fragment>
             <div className="display">
@@ -43,32 +45,42 @@ function UserFormStore()
                     <h1>Inclusão de Usuário</h1>
 
                     <form onSubmit={(e)=>onSubmit(e)}>
-                        <input
-                            type="text"
-                            value={user.name}
-                            placeholder="Nome do Usuário"
-                            onChange={
-                                e => setUser({
-                                    ...user, name:e.target.value
-                                })
-                            } />
-                        <input
-                            value={user.email}
-                            placeholder="Email"
-                            onChange={
-                                e => setUser({
-                                    ...user, email:e.target.value
-                                })
-                            } />
-                        <input
-                            type="password"
-                            value={user.password}
-                            placeholder="Senha"
-                            onChange={
-                                e => setUser({
-                                    ...user, password:e.target.value
-                                })
-                            } />
+                        <div className ="p-20"> 
+                            <Input 
+                                id="name"
+                                type="text"
+                                value={model.name}
+                                placeholder="Nome"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.name}
+                                mensagem={error.nameMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="email"
+                                type="text"
+                                value={model.email}
+                                placeholder="Email"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.email}
+                                mensagem={error.emailMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="password"
+                                type="password"
+                                value={model.password}
+                                placeholder="Senha"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.password}
+                                mensagem={error.passwordMensagem}
+                            />
+                        </div>
                         <button className="btn btn-edit">Salvar</button>
                         <Link
                             type='button' 
@@ -77,9 +89,7 @@ function UserFormStore()
                                 Cancelar
                         </Link>
                     </form>
-                </div>
-
-                
+                </div> 
             </div>
         </Fragment>
     )

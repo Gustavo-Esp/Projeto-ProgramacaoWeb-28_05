@@ -3,10 +3,34 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UsuarioController;
-use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\PacienteController;
+use App\Http\Controllers\Api\MedicoController;
+use App\Http\Controllers\Api\ConsultaController;
+use App\Http\Controllers\Api\PagamentoController;
+use App\Http\Controllers\Api\ProntuarioMedicoController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
+})->middleware('auth:sanctum');
+
+Route::get('/paciente', function (Request $request) {
+    return $request->paciente();
+})->middleware('auth:sanctum');
+
+Route::get('/medico', function (Request $request) {
+    return $request->medico();
+})->middleware('auth:sanctum');
+
+Route::get('/pagamento', function (Request $request) {
+    return $request->pagamento();
+})->middleware('auth:sanctum');
+
+Route::get('/consulta', function (Request $request) {
+    return $request->consulta();
+})->middleware('auth:sanctum');
+
+Route::get('/prontuarioMedico', function (Request $request) {
+    return $request->prontuarioMedico();
 })->middleware('auth:sanctum');
 
 Route::post('/login', [LoginController::class, 'login']);

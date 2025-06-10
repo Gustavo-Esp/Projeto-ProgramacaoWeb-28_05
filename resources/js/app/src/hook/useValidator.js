@@ -9,11 +9,15 @@ const useValidator = (initialModel, errorModel, validationRules) =>{
     setModel((prev) => ({
       ...prev,[name] : value
     }));
-
-    console.log(model);
   }
 
-  const hasErros = (erros) => {
+  const handleBlurField = (e) => {
+    const { name, value } = e.target;
+    let erros = validBlurInput(name);
+    setError(erros);
+  }
+
+  const hasErrors = (erros) => {
     return Object.values(erros).some(value=> value === true);
   }
 
@@ -22,13 +26,27 @@ const useValidator = (initialModel, errorModel, validationRules) =>{
     Object.keys(validationRules).forEach((field) => {
       const validationFunction = validationRules[field];
       const value = model[field];
+      const mensagens = validationFunction(value, model);
+        erros[`${field}Mensagem`] = mensagens;
+        const hasErrors = Array.isArray(mensagens) && mensagens.some(msg => typeof msg === 'string' && msg.trim().length > 0);
 
-      erros[`${field}Mensagem`] = validationFunction(value, model);
-      erros[field]=!!(erros[`${field}Mensagem`] && erros[`${field}Mensagem`].length > 0);
-
-      return erros;
+      erros[field] = hasErrors;
     })
+    
+    return erros;
   }
+
+  const validBlurInput = (field) => {
+    let erros = {...error }
+    const validationFunction = validationRules[field];
+    if (validationFunction){
+      const value = model[field];
+      erros[`${field}Mensagem`] = validationFunction(value, model);
+      erros[field] = (erros[`${field}Mensagem`] && erros[`${field}Mensagem`].length > 0);
+    }
+    return erros;
+  }
+
 
   const formValid = () => {
     const erros = validateAll();
@@ -42,6 +60,7 @@ const useValidator = (initialModel, errorModel, validationRules) =>{
     error,
     setError,
     handleChangeField,
+    handleBlurField,
     validateAll,
     formValid,
 

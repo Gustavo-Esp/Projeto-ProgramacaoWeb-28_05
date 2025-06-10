@@ -27,23 +27,6 @@ const loginValidationRules = {
         if (password && password.length < PASSWORD_LENGHT){
             mensagens.push('A Senha deve ter no mínimo {PASSWORD_LENGHT} caracteres');
         }
-
-        /*const hasNumber = [...password].some((char) =>{ 
-            NUMBER.includes(char);
-        });
-
-        if (!hasNumber) {
-            mensagens.push('A Senha deve conter pelo menos um número');
-        }
-        
-        const hasLowercase = [...password].some((char) =>{ 
-            LOWERCASE.includes(char);
-        });
-
-        if (!hasLowercase) {
-            mensagens.push('A Senha deve conter pelo menos uma letra minúscula');
-        }*/
-
         return mensagens;
     },
     

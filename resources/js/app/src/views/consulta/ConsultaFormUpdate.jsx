@@ -1,101 +1,103 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import axiosClient from '../../axiosClient';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import {Fragment, useEffect, useState} from "react"
+import axiosClient from "../../axiosClient";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import Input from "../../components/input/Input";
+import {useValidarDadosConsulta} from "../../rules/ConsultaValidationRules";
 
-function ConsultaFormUpdate()
-{
+export default function ConsultaFormUpdate(){
+
     const navigate = useNavigate();
 
-    const [consulta, setConsulta] = useState({
-        id:null,
-        dataHora:'',
-        status:'',
-        motivo:'',
-        medicoID:'',
-        pacienteID:'',
-        medico: {
-          nome:'',
-        },
-        paciente: {
-          nome:'',
-        }
-    });
+    const   {
+            model,
+            setModel,
+            error,
+            formValid,
+            handleBlurField,
+            handleChangeField,
+    } = useValidarDadosConsulta();
 
     const {id} = useParams();
 
-    if (id)
-    {
-        useEffect(() => {
+    useEffect(() => {
+        if (id) {
             axiosClient.get(`/consulta/show/${id}`)
-            .then(({data}) =>{
-                setConsulta(data.data);
-                //console.log(data.data);
-            }).catch((error)=>{
-                console.log(error);
-            })
-        },[id]);
-    }
+                .then(({ data }) => {
+                    setModel(data.data);
+                }).catch((error) => {
+                    console.log(error);
+                });
+        }
+    }, [id]);
 
-    // Pega informações do Servidor
-    axiosClient.get(`/consulta/show/${id}`)
-                .then(({data})=>{
-                   //console.log(data.data); 
-                })
-                .catch();
-
-    // Função do tipo Anônima
     const onSubmit = (e) => {
+
         e.preventDefault();
-        axiosClient.put(`/consulta/update/${id}`, consulta)
-            .then(() =>{
-                setConsulta({});
-                console.log('Consulta alterada com sucesso');
-                navigate('/consulta/index')
+
+        if(formValid()){
+            const updatedModel = { ...model };
+            axiosClient.put(`/consulta/update/${id}`, updatedModel)
+                .then(()=>{
+                    setModel({});
+                    console.log("Consulta alterado com sucesso");
+                    navigate('/consulta/index')
             }).catch((error)=>{
                 console.log(error);
-            })
+            });
+        }
+        else{
+            console.log("Não foi possível alterar a Consulta");
+        }
+
     }
-    
+
     return(
         <Fragment>
             <div className="display">
                 <div className="card animated fadeinDown">
-                    {consulta.id && <h1>Alteração da data: { consulta.dataHora}</h1> && <h1>Nome do medico atendente: { consulta.medico?.nome}</h1>}
-
+                    { model.id && <h1>Alteração do Consulta</h1> }
                     <form onSubmit={(e)=>onSubmit(e)}>
-                        <input
-                            type="text"
-                            value={consulta.dataHora}
-                            placeholder="Data e hora da consulta"
-                            onChange={
-                                e => setConsulta({
-                                    ...consulta, dataHora:e.target.value
-                                })
-                            } />
-                        <input
-                            type="text"
-                            value={consulta.motivo}
-                            placeholder="Motivo da consulta"
-                            onChange={
-                                e => setConsulta({
-                                    ...consulta, motivo:e.target.value
-                              })
-                            } />
-                        <input
-                            type="text"
-                            value={consulta.status}
-                            placeholder="Status da consulta"
-                            onChange={
-                                e => setConsulta({
-                                    ...consulta, status:e.target.value
-                                })
-                            } />
-                        <button className="btn btn-edit">Salvar</button>
-                        <Link
-                            type='button' 
-                            className='btn btn-cancel'
-                            to='/consulta/index'>
-                                Cancelar
+                        <div className="p-20">
+                            <Input 
+                                id="dataHora"
+                                type="text"
+                                value={model.dataHora}
+                                placeholder="Data da Consulta"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.dataHora}
+                                mensagem={error.dataHoraMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="status"
+                                type="text"
+                                value={model.status}
+                                placeholder="Status da Consulta"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.status}
+                                mensagem={error.statusMensagem}
+                            />
+                        </div>
+                        <div className ="p-20">
+                            <Input 
+                                id="motivo"
+                                type="text"
+                                value={model.motivo}
+                                placeholder="Motivo da Consulta"
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.motivo}
+                                mensagem={error.motivoMensagem}
+                            />
+                        </div>
+                        <button className="btn btn-edit" to="/consulta/index">
+                            Salvar
+                        </button>
+                        <Link type="button" className="btn btn-cancel" to="/consulta/index">
+                            Cancelar
                         </Link>
                     </form>
                 </div>
@@ -103,5 +105,3 @@ function ConsultaFormUpdate()
         </Fragment>
     )
 }
-
-export default ConsultaFormUpdate
