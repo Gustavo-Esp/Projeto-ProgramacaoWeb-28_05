@@ -48,7 +48,6 @@ function ProntuarioMedicoFormShow()
             <div className="display">
                 <div className="card animated fadeInDown">
                     {prontuarioMedico.id && <h1>data do prontuário: { prontuarioMedico.dataHora}</h1> && <h1>medico responsável: { prontuarioMedico.medico?.nome}</h1>}
-                </div>
 
                 <form>
                     <input defaultValue={prontuarioMedico.dataHora} placeholder="Data e hora do prontuário" readOnly={true}/>
@@ -63,6 +62,7 @@ function ProntuarioMedicoFormShow()
                     </button>
                 </form>
             </div>
+        </div>
         </Fragment>
     )
 }

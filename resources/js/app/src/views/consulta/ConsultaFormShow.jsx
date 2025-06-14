@@ -52,7 +52,6 @@ function ConsultaFormShow()
                         <h1>Médico atendente: {consulta.medico?.nome}</h1>
                     </>
                     )}
-                </div>
 
                 <form>
                     <input defaultValue={consulta.dataHora} placeholder="Data e hora da consulta" readOnly={true}/>
@@ -67,6 +66,7 @@ function ConsultaFormShow()
                     </button>
                 </form>
             </div>
+        </div>
         </Fragment>
     )
 }

@@ -29,19 +29,19 @@ export default function MedicoFormList()
                     justifyContent:'space-between',
                     alignItems:'center'
                 }}>
-                    <h1>Medicos</h1> 
+                    <h1>Médicos</h1> 
                     <Link to="/medico/store" className="btn-add">Store</Link>
                 </div>
                 <table>
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>Nome</th>
-                            <th>Especialidade</th>
-                            <th>CRM</th>
-                            <th>Telefone</th>
-                            <th>Email</th>
-                            <th className="center actions" colSpan="3">Ações</th>
+                            <th className="col-id">Id</th>
+                            <th className="col-nome">Nome</th>
+                            <th className="col-especialidade">Especialidade</th>
+                            <th className="col-crm">CRM</th>
+                            <th className="col-telefone">Telefone</th>
+                            <th className="col-email">Email</th>
+                            <th className='center actions' colSpan={3}>Ações</th>
                         </tr>
                     </thead>
                     <tbody>

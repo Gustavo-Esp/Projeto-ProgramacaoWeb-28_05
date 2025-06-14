@@ -41,7 +41,6 @@ function UserFormShow()
             <div className="display">
                 <div className="card animated fadeInDown">
                     {user.id && <h1>Consulta de Usuário: { user.name}</h1>}
-                </div>
 
                 <form>
                     <input defaultValue={user.name} placeholder="Nome do Usuário" readOnly={true}/>
@@ -53,21 +52,8 @@ function UserFormShow()
                     </button>
                 </form>
             </div>
-        </Fragment>
-
-        /*
-        OU
-        Div
-        <div>
-
         </div>
-
-        OU
-
-        Fragmento Vazio
-        <>
-        </>
-        */
+        </Fragment>
     )
 }
 

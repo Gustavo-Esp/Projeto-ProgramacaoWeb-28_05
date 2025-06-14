@@ -33,25 +33,24 @@ export default function DefaultLayout({children})
     <div id="defaultLayout">
         <aside>
             <Link to="/dashboard"> Dashboard </Link>
-            <Link to="/user/index"> Usuário </Link>
-            <Link to="/paciente/index"> Paciente </Link>
-            <Link to="/medico/index"> Medico </Link>
-            <Link to="/consulta/index"> Consulta </Link>
-            <Link to="/pagamento/index"> Pagamento </Link>
-            <Link to="/prontuarioMedico/index"> ProntuarioMedico </Link>
+            <Link to="/user/index"> Usuários </Link>
+            <Link to="/paciente/index"> Pacientes </Link>
+            <Link to="/medico/index"> Médicos </Link>
+            <Link to="/consulta/index"> Consultas </Link>
+            <Link to="/pagamento/index"> Pagamentos </Link>
+            <Link to="/prontuarioMedico/index"> Prontuários </Link>
         </aside>
         <div className='content'>
             <header>
-                <div>
+                <div className = 'header'> 
                     Sistema de Clínica Médica
                 </div>
                 <div>
-                    {/* Espaço em Branco = &nbsp; */}
                     { user.name } &nbsp; &nbsp;
                     <a onClick={onLogout} className='btn-logout' href="#"> Logout </a>
                 </div>
             </header>
-            <main>
+            <main className='main-content'>
                 { children }
             </main>
         </div>

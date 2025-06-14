@@ -42,7 +42,6 @@ function PacienteFormShow()
             <div className="display">
                 <div className="card animated fadeInDown">
                     {paciente.id && <h1>Consulta de Paciente: { paciente.nome}</h1>}
-                </div>
 
                 <form>
                     <input defaultValue={paciente.nome} placeholder="Nome do Paciente" readOnly={true}/>
@@ -57,6 +56,7 @@ function PacienteFormShow()
                     </button>
                 </form>
             </div>
+        </div>
         </Fragment>
     )
 }

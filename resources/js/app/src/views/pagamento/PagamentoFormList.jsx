@@ -35,13 +35,13 @@ export default function PagamentoFormList()
                 <table>
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>dataHora</th>
-                            <th>valor</th>
-                            <th>metodoPagamento</th>
-                            <th>Nome do</th>
-                            <th>Id da Consulta</th>
-                            <th className="center actions" colSpan="3">Ações</th>
+                            <th className="col-id">Id</th>
+                            <th className="col-dataHora">Data do Pagamento</th>
+                            <th className="col-valor">Valor</th>
+                            <th className="col-metodoPagamento">Forma de Pagamento</th>
+                            <th className="col-paciente-nome">Paciente</th>
+                            <th className="col-id">Consulta</th>
+                            <th className='center actions' colSpan={3}>Ações</th>
                         </tr>
                     </thead>
                     <tbody>

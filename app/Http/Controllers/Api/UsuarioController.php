@@ -53,12 +53,12 @@ class UsuarioController extends Controller
         ],200);
     }
 
-    public function store(Request $request){ //salvar um registro, para criar uma variável sempre tem de ter o $ na frente dela
+    public function store(Request $request){ 
         
         $validator = Validator::make($request->all(),[
-            'name'=>'required|string|max:255', //max é tamanho máximo
-            'email'=>'required|string|email|max:255|unique:users,email',
-            'password'=>'required|string|min:6', //min é tamanho mínimo
+            'name'=>'required|string|max:255', 
+            'email'=>'required|string|email|max:255',
+            'password'=>'required|string|min:6', 
         ]);
 
         if($validator->fails()){
@@ -115,7 +115,7 @@ class UsuarioController extends Controller
 
         $validator = Validator::make($request->all(),[ //valida os dados
             'name'=>'required|string|max:255', //max é tamanho máximo
-            'email'=>'required|string|email|max:255|unique:users,email,'.$id,
+            'email'=>'required|string|email|max:255'.$id,
             
         ]);
 

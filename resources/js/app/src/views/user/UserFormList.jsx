@@ -35,10 +35,10 @@ export default function UserFormList()
                 <table>
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th className="center actions" colSpan="3">Ações</th>
+                            <th className="col-id">Id</th>
+                            <th className="col-nome">Nome</th>
+                            <th className="col-email">Email</th>
+                            <th className='center actions' colSpan={3}>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,9 +46,9 @@ export default function UserFormList()
                             users.length > 0 ? (
                                 users && users.map((user) => (
                                     <tr key={user.id}>
-                                        <td>{user.id}</td>
-                                        <td>{user.name}</td>
-                                        <td>{user.email}</td>
+                                        <td className="col-id">{user.id}</td>
+                                        <td className="col-nome">{user.name}</td>
+                                        <td className="col-email">{user.email}</td>
                                         <td className="center actions">
                                             <Link className="btn-show" to={`/user/show/${user.id}`}>Show</Link>
                                         </td>

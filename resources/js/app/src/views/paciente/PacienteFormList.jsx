@@ -37,13 +37,13 @@ export default function PacienteFormList()
                 <table>
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>Nome</th>
-                            <th>Data de Nascimento</th>
-                            <th>Endereco</th>
-                            <th>Telefone</th>
-                            <th>Email</th>
-                            <th className="center actions" colSpan="3">Ações</th>
+                            <th className="col-id">Id</th>
+                            <th className="col-nome">Nome</th>
+                            <th className="col-dataNascimento">Data de Nascimento</th>
+                            <th className="col-endereco">Endereço</th>
+                            <th className="col-telefone">Telefone</th>
+                            <th className="col-email">Email</th>
+                            <th className='center actions' colSpan={3}>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,7 +54,7 @@ export default function PacienteFormList()
                                         <td>{paciente.id}</td>
                                         <td>{paciente.nome}</td>
                                         <td>{paciente.dataNascimento}</td>
-                                        <td>{paciente.enreco}</td>
+                                        <td>{paciente.endereco}</td>
                                         <td>{paciente.telefone}</td>
                                         <td>{paciente.email}</td>
                                         <td className="center actions">

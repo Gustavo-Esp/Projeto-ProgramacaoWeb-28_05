@@ -42,7 +42,6 @@ function MedicoFormShow()
             <div className="display">
                 <div className="card animated fadeInDown">
                     {medico.id && <h1>Nome do Medico: { medico.nome}</h1>}
-                </div>
 
                 <form>
                     <input defaultValue={medico.nome} placeholder="Nome do Medico" readOnly={true}/>
@@ -57,6 +56,7 @@ function MedicoFormShow()
                     </button>
                 </form>
             </div>
+        </div>
         </Fragment>
     )
 }

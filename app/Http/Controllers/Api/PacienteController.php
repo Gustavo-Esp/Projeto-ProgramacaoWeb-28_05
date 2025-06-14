@@ -60,7 +60,7 @@ class PacienteController extends Controller
             'dataNascimento' => 'required|date',
             'endereco' => 'required|string|max:255',
             'telefone' => 'required|string|max:15',
-            'email' => 'required|string|email|max:255|unique:pacientes,email',
+            'email' => 'required|string|email|max:255',
         ]);
 
         if ($validator->fails()){
@@ -121,7 +121,7 @@ class PacienteController extends Controller
             'dataNascimento' => 'required|date',
             'endereco' => 'required|string|max:255',
             'telefone' => 'required|string|max:15',
-            'email' => 'required|string|email|max:255|unique:pacientes,email,' . $id,
+            'email' => 'required|string|email|max:255'.$id,
         ]);
 
         if ($validator->fails()){

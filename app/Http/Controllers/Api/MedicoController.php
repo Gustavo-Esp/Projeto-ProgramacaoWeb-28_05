@@ -121,7 +121,7 @@ class MedicoController extends Controller
             'especialidade' => 'required|string|max:255',
             'crm' => 'required|string|max:255',
             'telefone' => 'required|string|max:15',
-            'email' => 'required|string|email|max:255|unique:medicos,email,' . $id,
+            'email' => 'required|string|email|max:255|unique:medicos,email,'.$id,
         ]);
 
         if ($validator->fails()){

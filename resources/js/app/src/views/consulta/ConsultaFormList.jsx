@@ -35,13 +35,13 @@ export default function ConsultaFormList()
                 <table>
                     <thead>
                         <tr>
-                            <th>id</th>
-                            <th>dataHora</th>
-                            <th>motivo</th>
-                            <th>status</th>
-                            <th>Nome do Paciente</th>
-                            <th>Nome do Médico</th>
-                            <th className="center actions" colSpan="3">Ações</th>
+                            <th className="col-id">Id</th>
+                            <th className="col-dataHora">Data da Consulta</th>
+                            <th className="col-motivo">Motivo</th>
+                            <th className="col-status">Status</th>
+                            <th className="col-paciente-nome">Paciente</th>
+                            <th className="col-medico-nome">Médico</th>
+                            <th className='center actions' colSpan={3}>Ações</th>
                         </tr>
                     </thead>
                     <tbody>

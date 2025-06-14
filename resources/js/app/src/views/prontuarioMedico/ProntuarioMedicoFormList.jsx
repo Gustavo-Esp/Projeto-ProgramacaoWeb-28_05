@@ -34,13 +34,13 @@ export default function ProntuarioMedicoFormList()
                 <table>
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>dataHora</th>
-                            <th>descricao</th>
-                            <th>prescricao</th>
-                            <th>Nome do Paciente</th>
-                            <th>Nome do Médico</th>
-                            <th className="center actions" colSpan="3">Ações</th>
+                            <th className="col-id">Id</th>
+                            <th className="col-dataHora">Data de Emissão</th>
+                            <th className="col-descricao">Descrição</th>
+                            <th className="col-prescricao">Prescrição</th>
+                            <th className="col-paciente-nome">Paciente</th>
+                            <th className="col-medico-nome">Médico</th>
+                            <th className='center actions' colSpan={3}>Ações</th>
                         </tr>
                     </thead>
                     <tbody>

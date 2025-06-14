@@ -53,7 +53,6 @@ function PagamentoFormShow()
                             <h1>Nome do Paciente: {pagamento.paciente?.nome}</h1>
                      </div>
                     )}
-                </div>
                 <form>
                     <input defaultValue={pagamento.dataHora} placeholder="Data e hora do pagamento" readOnly={true}/>
                     <input defaultValue={pagamento.valor} placeholder="Valor do pagamento" readOnly={true}/>
@@ -67,6 +66,7 @@ function PagamentoFormShow()
                     </button>
                 </form>
             </div>
+        </div>
         </Fragment>
     )
 }
