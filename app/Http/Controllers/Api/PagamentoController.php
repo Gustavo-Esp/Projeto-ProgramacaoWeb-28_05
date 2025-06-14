@@ -20,7 +20,7 @@ class PagamentoController extends Controller
         $props = $request->get('props','id');
         $search = $request->get('search','');
 
-        $query = Pagamento::select('id', 'dataHora', 'valor', 'metodoPagamento', 'pacienteID', 'consultaID' ,'created_at', 'updated_at')
+        $query = Pagamento::with('paciente', 'consulta')
             ->whereNull('deleted_at')
             ->orderBy($props, $dir);
 
@@ -47,19 +47,14 @@ class PagamentoController extends Controller
         ],200);
     }
 
-    public function create()
-    {
-        
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'dataHora'=>'required|string|max:6',
-            'valor'=>'required|numeric|max:50',
-            'metodoPagamento'=>'required|string|max:20',
-            'pacienteID'=>'required|integer|exists:pacientes,id',
-            'consultaID'=>'required|integer|exists:consultas,id',
+            'dataHora'=>'required|date',
+            'valor'=>'required|string|max:20',
+            'metodoPagamento'=>'required|string|max:200',
+            'pacienteId'=>'required|string|max:200',
+            'consultaId'=>'required|string|max:200',
         ]);
 
         if ($validator->fails()){
@@ -74,8 +69,8 @@ class PagamentoController extends Controller
             'dataHora'=>$request->dataHora,
             'valor'=>$request->valor,
             'metodoPagamento'=>$request->metodoPagamento,
-            'pacienteID'=>$request->pacienteID,
-            'consultaID'=>$request->consultaID,
+            'pacienteId'=>$request->pacienteId,
+            'consultaId'=>$request->consultaId,
         ]);
 
         return response()->json([
@@ -85,37 +80,39 @@ class PagamentoController extends Controller
         ],201);
     }
 
-    public function show(Request $request, string $id)
-    {
-        $data = Pagamento::findOrFail($id);
+    public function show(Request $request, string $id){
 
-        if(!$data){
-            throw new HttpResponseException(
-                response()->json('Pagamento não localizado'),
-                404,
-            );
-        }
+        
+        try{ //o try catch é um tratamento de exceções (erros)
 
+            $data = Pagamento::with('paciente','consulta')->findOrFail($id);
+
+            if(!$data){
+                throw new HttpResponseException(
+                    response()->json('Pagamento não localizado'),
+                    404,
+                );
+            }
+        } catch(HttpResponseException $e){
+            response()->json($e->getMessage());
+         }
+        
         return response()->json([
             'message'=>'Pagamento localizado com sucesso',
             'data'=>$data,
             'status'=>200,
         ],200);
-    }
 
-    public function edit(string $id)
-    {
-       
     }
 
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(),[
-            'dataHora'=>'required|string|max:6',
-            'valor'=>'required|numeric|max:50',
-            'metodoPagamento'=>'required|string|max:20',
-            'pacienteID'=>'required|integer|exists:pacientes,id',
-            'consultaID'=>'required|integer|exists:consultas,id',
+            'dataHora'=>'required|date',
+            'valor'=>'required|string|max:20',
+            'metodoPagamento'=>'required|string|max:200',
+            'pacienteId'=>'required|string|max:200',
+            'consultaId'=>'required|string|max:200',
         ]);
 
         if ($validator->fails()){
@@ -131,7 +128,7 @@ class PagamentoController extends Controller
         if(!$data){
             return response()->json([
                 'message'=>'Pagamento não localizado',
-                'data'=>$data,
+                'data'=>$id,
                 'status'=>404,
             ],404);
         }
@@ -139,12 +136,8 @@ class PagamentoController extends Controller
         $data->dataHora = $request->dataHora ?? $data->dataHora;
         $data->valor = $request->valor ?? $data->valor;
         $data->metodoPagamento = $request->metodoPagamento ?? $data->metodoPagamento;
-        $data->pacienteID = $request->pacienteID ?? $data->pacienteID;
-        $data->consultaID = $request->consultaID ?? $data->consultaID;
-
-        /*if ($request->has('password')){
-            $data->password = Hash::make($request->password);
-        }*/
+        $data->pacienteId = $request->pacienteId ?? $data->pacienteId;
+        $data->consultaId = $request->consultaId ?? $data->consultaId;
 
         $data->save();
 

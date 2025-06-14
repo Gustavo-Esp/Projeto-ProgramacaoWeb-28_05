@@ -32,7 +32,6 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
         'remember_token',
         'updated_at',
         'created_at',
@@ -54,6 +53,6 @@ class User extends Authenticatable
 
     public function medico()
     {
-        $this->hasOne(Medico::class);
+        return $this->hasOne(Medico::class);
     }
 }

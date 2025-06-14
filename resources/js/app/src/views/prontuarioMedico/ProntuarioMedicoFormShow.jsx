@@ -11,8 +11,8 @@ function ProntuarioMedicoFormShow()
         dataHora:'',
         descricao:'',
         prescricao:'',
-        medicoID:'',
-        pacienteID:'',
+        medicoId:'',
+        pacienteId:'',
         medico: {
           nome:'',
         },
@@ -47,7 +47,7 @@ function ProntuarioMedicoFormShow()
         <Fragment>
             <div className="display">
                 <div className="card animated fadeInDown">
-                    {ProntuarioMedico.id && <h1>data do prontuário: { prontuarioMedico.dataHora}</h1> && <h1>medico responsável: { prontuarioMedico.medico?.nome}</h1>}
+                    {prontuarioMedico.id && <h1>data do prontuário: { prontuarioMedico.dataHora}</h1> && <h1>medico responsável: { prontuarioMedico.medico?.nome}</h1>}
                 </div>
 
                 <form>

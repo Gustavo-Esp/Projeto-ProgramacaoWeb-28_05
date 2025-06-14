@@ -1,187 +1,181 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\HttpRequestException;
+use Illuminate\Http\Exceptions\HttpRespondeException;
 use App\Models\User;
 
 class UsuarioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
-    {
-        // Configurações da Paginação
-        $page = $request->get('page', '1'); // Página Inicial
-        $pageSize = $request->get('pageSize', '10'); // Tamanho de Página (Quantos registros numa página)
-        $dir = $request->get('dir', 'asc'); // Direção (Crescente ou Decrecente)
-        $props = $request->get('props', 'id'); // Propriedades
-        $search = $request->get('search', ''); // Pesquisa
+    public function index(Request $request){ //lista de itens cadastrados
 
-        // Seleciona os dados do usuário
-        $query = User::select('id', 'name', 'email', 'created_at', 'updated_at')
-            ->whereNull('deleted_at')
-            ->orderBy($props, $dir);
-        
-        // Quantidade de Registros
-        $total = $query->count();
+        //precisamos saber qual página o usuário está, o tamanho da página (número de registros que vai mostrar pra ele)
+        //vai mostrar os registros em ordem crescente, decrescente, etc
+        //vai pesquisar por qual campo: nome, email, etc
 
-        // O número de registros na página
-        $data = $query->offset(($page-1) * $pageSize)
-            ->limit($pageSize)
-            ->get();
+        $page = $request->get('page',1); //se não vier nada começa no 1
+        $pageSize = $request->get('pageSize',10); //se não vier nada mostra os registros de 5 em 5
+        $dir = $request->get('dir','asc');
+        $props = $request->get('props','id');
+        $search = $request->get('search','');
 
-        // Quantidade de Páginas
-        $totalPages = ceil($total / $pageSize);
 
-        return response()->json([
-            'message' => 'Registro de Usuários',
-            'status' => 200,
-            'page' => $page,
-            'pageSize' => $pageSize,
-            'dir' => $dir,
-            'props' => $props,
-            'search' => $search,
-            'total' => $total,
-            'totalPages' => $totalPages,
-            'data' => $data,
-         ], 200);
-    }
+        $query = User::select('id','name','email')
+                ->whereNull('deleted_at')
+                ->orderBy($props, $dir);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(),[
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'sometimes|required|string|min:6'
-        ]);
+        $total = $query->count(); //isso guarda o total de registros que tem na tabela
 
-        if ($validator->fails()){
-            return response()->json([
-                'message' => 'Erro nas informações do usuário',
-                'errors' => $validator->errors(),
-                'status' => 404,
-            ], 404);
-        }
+        $data = $query->offset(($page - 1) * $pageSize) //esse é o cálculo da paginação (paginate)
+                      ->limit($pageSize)
+                      ->get();
 
-        $data = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
 
-        ]);
+        $totalPages = ceil($total / $pageSize); //esse é o total de páginas
 
-        return response()->json([
-            'message' => 'Usuário cadastrado com sucesso',
-            'data' => $data,
-            'status' => 201,
-        ],201);
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Request $request, string $id)
-    {
-        try{
-            $data = User::findOrFail($id);
-        }
-        catch(HttpResponseException $e){
-            response()->json([
-                'message'=>$e->getMessage(),
-                'status'=>404
-            ],404);
-        }
 
-        return response()->json([
-            'message'=>"Usuário encontrado com sucesso",
+        return response()->json([ //json é de javascript
+            'message'=>'Relatório de usuários',
             'status'=>200,
-            'data'=>$data
+            'page'=>$page,
+            'pageSize'=>$pageSize,
+            'dir'=>$dir,
+            'props'=>$props,
+            'search'=>$search,
+            'total'=>$total,
+            'totalPages'=>$totalPages,
+            'data'=>$data,
         ],200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        // Id seria a chave primária do usuário, por exemplo
+    public function store(Request $request){ //salvar um registro, para criar uma variável sempre tem de ter o $ na frente dela
         
-        // Validações 
         $validator = Validator::make($request->all(),[
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$id,
-            // Para efeito didático, tiraremos a validação do password
-            //'password' => 'sometimes|required|string|min:6'
+            'name'=>'required|string|max:255', //max é tamanho máximo
+            'email'=>'required|string|email|max:255|unique:users,email',
+            'password'=>'required|string|min:6', //min é tamanho mínimo
         ]);
 
-        if ($validator->fails()){
+        if($validator->fails()){
             return response()->json([
-                'message' => 'Erro nas informações do usuário',
-                'errors' => $validator->errors(),
-                'status' => 404,
-            ], 404);
+                'message'=>'Erro nas informações do usuário',
+                'data'=>$validator->errors(),
+                'status'=>404,
+
+            ],404);
         }
 
-        // Busca o Id do Usuário
-        $data = User::find($id);
 
-        // Caso não encontre
-        if (!$data){
-            return response()->json([
-                'message' => 'Usuário não localizado',
-                'data'=>$id,
-                'status' => 404,
-            ], 404);
-        }
+        $data = User::create([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>Hash::make($request->password),
+        ]);
 
-        // Atualização do dados do Usuário
-        $data->name = $request->name ?? $data->name; // Se houve atualização, atualiza, caso contrário, mantém o mesmo valor
-        $data->email = $request->email ?? $data->email;
+        return response()->json([
+            'message'=>'Usuário cadastrado com sucesso',
+            'data'=>$data,
+            'status'=>201,
+        ],201);
+
+    }
+
+    public function show(Request $request, string $id){
+
         
-        // Atualização do Password
-        if ($request->has('password'))
-        {
+        try{ //o try catch é um tratamento de exceções (erros)
+
+            $data = User::findOrFail($id);
+
+            if(!$data){
+                throw new HttpResponseException(
+                    response()->json('Usuário não localizado'),
+                    404,
+                );
+            }
+        } catch(HttpResponseException $e){
+            response()->json($e->getMessage());
+         }
+        
+        return response()->json([
+            'message'=>'Usuário localizado com sucesso',
+            'data'=>$data,
+            'status'=>200,
+        ],200);
+
+    }
+
+    public function update(Request $request, string $id){ //atualizar um registro
+
+
+        $validator = Validator::make($request->all(),[ //valida os dados
+            'name'=>'required|string|max:255', //max é tamanho máximo
+            'email'=>'required|string|email|max:255|unique:users,email,'.$id,
+            
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'message'=>'Erro nas informações do usuário',
+                'data'=>$validator->errors(),
+                'status'=>404,
+
+            ],404);
+        }
+
+        $data = User::find($id); //achei o usuário
+
+        if(!$data){
+            return response()->json([
+                'message'=>'Usuário não localizado',
+                'data'=>$id,
+                'status'=>404,
+            ], 404);
+        }
+
+        $data->name = $request->name ?? $data->name;
+        $data->email = $request->email ?? $data->email;
+
+        if($request->has('password')){ //a senha veio ?
             $data->password = Hash::make($request->password);
         }
-
-        // Salva o Usuário
+        
         $data->save();
 
         return response()->json([
-            'message => "Usuário alterado com sucesso',
-            'data' => $data,
-            'status' => 200,
-        ], 200);
+            'message'=>'Usuário alterado com sucesso',
+            'data'=>$data,
+            'status'=>200,
+        ],200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
+    public function destroy(Request $request, string $id){ //deletar
+
         $data = User::find($id);
 
-        if (!$data){
+        if(!$data){
             return response()->json([
-                'message' => 'Usuário não encontrado',
-                'status' => 404,
-            ], 404);
+                'message'=>'Usuário localizado com sucesso',
+                'data'=>$id,
+                'status'=>404,
+            ],404);
+    
         }
 
         $data->delete();
-        
+
         return response()->json([
-            'message => "Usuário encontrado com sucesso',
-            'status' => 200,
-        ], 200);
+            'message'=>'Usuário excluído com sucesso',
+            'data'=>$data,
+            'status'=>200,
+        ],200);
+
     }
+
+
 }

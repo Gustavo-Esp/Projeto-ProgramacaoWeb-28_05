@@ -11,8 +11,8 @@ function PagamentoFormDestroy()
         dataHora:'',
         valor:'',
         metodoPagamento:'',
-        consultaID:'',
-        pacienteID:'',
+        consultaId:'',
+        pacienteId:'',
         consulta: {
           dataHora:'',
         },
@@ -35,13 +35,6 @@ function PagamentoFormDestroy()
             })
         },[id]);
     }
-
-    // Pega informações do Servidor
-    axiosClient.get(`/pagamento/show/${id}`)
-                .then(({data})=>{
-                   console.log(data.data); 
-                })
-                .catch();
 
     // Função do tipo Anônima
     const onSubmit = (e) => {

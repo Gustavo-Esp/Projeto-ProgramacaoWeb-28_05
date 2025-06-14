@@ -117,7 +117,7 @@ export default function MedicoFormUpdate(){
                                 mensagem={error.emailMensagem}
                             />
                         </div>
-                        <button className="btn btn-edit" to="/medico/index">
+                        <button className="btn btn-edit">
                             Salvar
                         </button>
                         <Link type="button" className="btn btn-cancel" to="/medico/index">

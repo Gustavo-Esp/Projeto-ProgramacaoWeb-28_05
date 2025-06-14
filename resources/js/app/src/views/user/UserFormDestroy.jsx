@@ -27,13 +27,6 @@ function UserFormDestroy()
         },[id]);
     }
 
-    // Pega informações do Servidor
-    axiosClient.get(`/user/show/${id}`)
-                .then(({data})=>{
-                   console.log(data.data); 
-                })
-                .catch();
-
     // Função do tipo Anônima
     const onSubmit = (e) => {
         e.preventDefault();

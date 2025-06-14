@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('consultas', function (Blueprint $table) {
-            $table->increments('id')->usigned();
-            $table->datetime('dataHora');
-            $table->string('status', 20);
-            $table->string('motivo', 200);
-             $table->foreignId('pacienteID')
-                ->constrained('pacientes') // on(nome da tabela de origem)
-                ->onDelete('cascade'); 
-            $table->foreignId('medicoID')
-                ->constrained('medicos') // on(nome da tabela de origem)
-                ->onDelete('cascade'); 
+            $table->id();
+            $table->date('dataHora');
+            $table->string('status');
+            $table->string('motivo');
+            $table->foreignId('pacienteId')
+                ->constrained('pacientes')
+                ->onDelete('cascade');
+            $table->foreignId('medicoId')
+                ->constrained('medicos')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

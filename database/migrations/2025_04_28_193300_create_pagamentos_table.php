@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pagamentos', function (Blueprint $table) {
-            $table->increments('id')->usigned();
-            $table->datetime('dataHora');
-            $table->decimal('valor', 18, 2);
-            $table->string('metodoPagamento', 20);
-             $table->foreignId('pacienteID')
-                ->constrained('pacientes') // on(nome da tabela de origem)
-                ->onDelete('cascade'); 
-            $table->foreignId('consultaID')
-                ->constrained('consultas') // on(nome da tabela de origem)
-                ->onDelete('cascade'); 
+            $table->increments('id');
+            $table->date('dataHora');
+            $table->decimal('valor');
+            $table->string('metodoPagamento');
+            $table->foreignId('pacienteId')
+                ->constrained('pacientes')
+                ->onDelete('cascade');
+            $table->foreignId('consultaId')
+                ->constrained('consultas')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

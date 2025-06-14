@@ -2,21 +2,14 @@ import React, { useEffect, useState } from 'react'
 import axiosClient from '../../axiosClient';
 import { Link } from 'react-router-dom';
 
-/*
-Caso o user.map() esteja dando errado de não ser função,
-é pq o user está vazio
-*/
-
 export default function UserFormList()
 {
     const [users, setUsers] = useState([]);
 
-    // Função anômina na linguagem JavaScript
     const getUsers = () => {
         axiosClient
             .get('/user/index')
             .then(({data}) => {
-                //console.log(data.data);
                 setUsers(data.data);
             })
             .catch((error)=>{
@@ -27,8 +20,6 @@ export default function UserFormList()
     useEffect(() => {
         getUsers();
     }, []);
-
-    //console.log(users);
 
     return(
         <div className="display">
@@ -44,7 +35,7 @@ export default function UserFormList()
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Id</th>
                             <th>Nome</th>
                             <th>Email</th>
                             <th className="center actions" colSpan="3">Ações</th>
@@ -76,7 +67,6 @@ export default function UserFormList()
                                     </td>
                                 </tr>
                             )
-                            
                         }
                     </tbody>
                 </table>

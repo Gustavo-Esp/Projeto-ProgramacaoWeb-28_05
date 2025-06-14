@@ -5,34 +5,44 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 class ProntuarioMedico extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes;
 
-    protected $table = 'prontuariosMedico';
+    protected $table = 'prontuariosmedicos';
 
     protected $fillable = [
         'dataHora',
         'descricao',
         'prescricao',
-        'pacienteID',
-        'medicoID',
+        'pacienteId',
+        'medicoId',
     ];
 
     protected $hidden = [
+        'remember_token',
         'updated_at',
         'created_at',
-        "deleted_at",
+        'deleted_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            //'email_verified_at' => 'datetime',
+            //'senha' => 'hashed',
+        ];
+    }
 
     public function paciente()
     {
-        $this->belongsTo(Paciente::class);
+        return $this->belongsTo(Paciente::class, 'pacienteId');
     }
 
     public function medico()
     {
-        $this->belongsTo(Medico::class);
+        return $this->belongsTo(Medico::class, 'medicoId');
     }
 }

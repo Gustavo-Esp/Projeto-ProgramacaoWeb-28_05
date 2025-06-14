@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::table('consultas', function(Blueprint $table){
+            $table->softDeletes(); //essa função cria um campo de deletar
+        });
     }
 
     /**
@@ -19,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('consultas', function(Blueprint $table){
+            $table->softDeletes(); //essa função cria um campo de deletar
+        });
     }
 };

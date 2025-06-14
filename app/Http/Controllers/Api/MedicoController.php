@@ -6,175 +6,180 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Models\User;
+use Illuminate\Support\Facades\HttpRequestException;
+use App\Models\Medico;
 
 class MedicoController extends Controller
 {
     public function index(Request $request)
     {
+        // Configurações da Paginação
+        $page = $request->get('page', '1'); // Página Inicial
+        $pageSize = $request->get('pageSize', '10'); // Tamanho de Página (Quantos registros numa página)
+        $dir = $request->get('dir', 'asc'); // Direção (Crescente ou Decrecente)
+        $props = $request->get('props', 'id'); // Propriedades
+        $search = $request->get('search', ''); // Pesquisa
 
-        $page = $request->get('page',1);
-        $pageSize = $request->get('pageSize',10);
-        $dir = $request->get('dir','asc');
-        $props = $request->get('props','id');
-        $search = $request->get('search','');
-
-        $query = Medico::select('id', 'nome', 'especialidade', 'crm', 'telefone', 'email', 'created_at', 'updated_at')
+        // Seleciona os dados do usuário
+        $query = Medico::select('id', 'nome', 'especialidade', 'crm', 'telefone', 'email')
             ->whereNull('deleted_at')
             ->orderBy($props, $dir);
-
+        
+        // Quantidade de Registros
         $total = $query->count();
 
-        $data = $query->offset(($page - 1) * $pageSize)
+        // O número de registros na página
+        $data = $query->offset(($page-1) * $pageSize)
             ->limit($pageSize)
             ->get();
 
+        // Quantidade de Páginas
         $totalPages = ceil($total / $pageSize);
-       
+
         return response()->json([
-            'message'=>'Relatório de médicos',
-            'status'=>200,
-            'page' =>$page,
-            'pageSize' =>$pageSize,
-            'dir' =>$dir,
-            'props' =>$props,
-            'search' =>$search,
-            'total' =>$total,
-            'totalPages' =>$totalPages,
-            'data' =>$data,
-            
-        ],200);
+            'message' => 'Registro de Medicos',
+            'status' => 200,
+            'page' => $page,
+            'pageSize' => $pageSize,
+            'dir' => $dir,
+            'props' => $props,
+            'search' => $search,
+            'total' => $total,
+            'totalPages' => $totalPages,
+            'data' => $data,
+         ], 200);
     }
 
-    public function create()
-    {
-        
-    }
-
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'nome'=>'required|string|max:100',
-            'especialidade'=>'required|string|max:50',
-            'crm'=>'required|string|max:20',
-            'telefone'=>'required|string|max:20',
-            'email'=>'required|string|email|max:100|unique:users,email',
+            'nome' => 'required|string|max:255',
+            'especialidade' => 'required|string|max:255',
+            'crm' => 'required|string|max:255',
+            'telefone' => 'required|string|max:15',
+            'email' => 'required|string|email|max:255|unique:medicos,email',
         ]);
 
         if ($validator->fails()){
             return response()->json([
-                'message'=>'Erro nas informações do médico',
-                'data'=>$validator->errors(),
-                'status'=>404,
-            ],404);
+                'message' => 'Erro nas informações do medico',
+                'errors' => $validator->errors(),
+                'status' => 404,
+            ], 404);
         }
 
         $data = Medico::create([
-            'nome'=>$request->nome,
-            'especialidade'=>$request->especialidade,
-            'crm'=>$request->crm,
-            'telefone'=>$request->telefone,
-            'email'=>$request->email,
+            'nome' => $request->nome,
+            'especialidade' => $request->especialidade,
+            'crm' => $request->crm,
+            'telefone' => $request->telefone,
+            'email' => $request->email,
+
         ]);
 
         return response()->json([
-            'message'=>'Médico cadastrado com sucesso',
-            'data'=>$data,
-            'status'=>201,
+            'message' => 'Medico cadastrado com sucesso',
+            'data' => $data,
+            'status' => 201,
         ],201);
     }
 
-    public function show(Request $request, string $id)
-    {
-        $data = Medico::findOrFail($id);
+    /**
+     * Display the specified resource.
+     */
 
-        if(!$data){
-            throw new HttpResponseException(
-                response()->json('Médico não localizado'),
-                404,
-            );
-        }
-
+    public function show(Request $request, string $id){
+        try{ 
+            $data = Medico::findOrFail($id);
+            if(!$data){
+                throw new HttpResponseException(
+                    response()->json('Medico não localizado'),
+                    404,
+                );
+            }
+        } catch(HttpResponseException $e){
+            response()->json($e->getMessage());
+         }
         return response()->json([
-            'message'=>'Médico localizado com sucesso',
+            'message'=>'Medico localizado com sucesso',
             'data'=>$data,
             'status'=>200,
         ],200);
     }
 
-    public function edit(string $id)
-    {
-       
-    }
 
     public function update(Request $request, string $id)
     {
+        // Id seria a chave primária do usuário, por exemplo
+        
+        // Validações 
         $validator = Validator::make($request->all(),[
-            'nome'=>'required|string|max:100',
-            'especialidade'=>'required|string|max:50',
-            'crm'=>'required|string|max:20',
-            'telefone'=>'required|string|max:20',
-            'email'=>'required|string|email|max:100|unique:users,email',
+            'nome' => 'required|string|max:255',
+            'especialidade' => 'required|string|max:255',
+            'crm' => 'required|string|max:255',
+            'telefone' => 'required|string|max:15',
+            'email' => 'required|string|email|max:255|unique:medicos,email,' . $id,
         ]);
 
         if ($validator->fails()){
             return response()->json([
-                'message'=>'Erro nas informações do médico',
-                'data'=>$validator->errors(),
-                'status'=>404,
-            ],404);
+                'message' => 'Erro nas informações do Medico',
+                'errors' => $validator->errors(),
+                'status' => 404,
+            ], 404);
         }
 
+        // Busca o Id do Usuário
         $data = Medico::find($id);
 
-        if(!$data){
+        // Caso não encontre
+        if (!$data){
             return response()->json([
-                'message'=>'Médico não localizado',
-                'data'=>$data,
-                'status'=>404,
-            ],404);
+                'message' => 'Medico não localizado',
+                'data'=>$id,
+                'status' => 404,
+            ], 404);
         }
 
-        $data->nome = $request->nome ?? $data->nome;
+        // Atualização do dados do Usuário
+        $data->nome = $request->nome ?? $data->nome; 
         $data->especialidade = $request->especialidade ?? $data->especialidade;
         $data->crm = $request->crm ?? $data->crm;
         $data->telefone = $request->telefone ?? $data->telefone;
+        // Se houve atualização, atualiza, caso contrário, mantém o mesmo valor
         $data->email = $request->email ?? $data->email;
 
-        /*if ($request->has('password')){
-            $data->password = Hash::make($request->password);
-        }*/
-
+        // Salva o Usuário
         $data->save();
 
         return response()->json([
-            'message'=>'Médico alterado com sucesso',
-            'data'=>$data,
-            'status'=>200,
-        ],200);
-
+            'message' => 'Medico alterado com sucesso',
+            'data' => $data,
+            'status' => 200,
+        ], 200);
     }
 
-    public function destroy(Request $request, string $id)
-    {
-        
-        $data = Medico::findOrFail($id);
-
+    /**
+     * Remove the specified resource from storage.
+     */
+        public function destroy(Request $request, string $id){
+        $data = Medico::find($id);
         if(!$data){
             return response()->json([
-                'message'=>'Médico não localizado',
-                'data'=>$data,
+                'message'=>'Medico localizado com sucesso',
+                'data'=>$id,
                 'status'=>404,
             ],404);
         }
-
         $data->delete();
-
         return response()->json([
-            'message'=>'Médico excluído com sucesso',
+            'message'=>'Medico excluído com sucesso',
             'data'=>$data,
             'status'=>200,
         ],200);
     }
 }
+

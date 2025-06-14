@@ -3,6 +3,7 @@ import axiosClient from "../../axiosClient";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import Input from "../../components/input/Input";
 import {useValidarDadosConsulta} from "../../rules/ConsultaValidationRules";
+import Select from "../../components/input/Select";
 
 export default function ConsultaFormUpdate(){
 
@@ -19,14 +20,48 @@ export default function ConsultaFormUpdate(){
 
     const {id} = useParams();
 
+    const [pacientes, setPacientes] = useState([]);
+
     useEffect(() => {
+        axiosClient.get('/paciente/index') 
+            .then(({ data }) => {
+                setPacientes(data.data);
+            })
+            .catch((error) => {
+                console.error("Erro ao buscar paciente:", error);
+            });
+    }, []);
+
+    const [medicos, setMedicos] = useState([]);
+
+    useEffect(() => {
+        axiosClient.get('/medico/index') 
+            .then(({ data }) => {
+                setMedicos(data.data);
+            })
+            .catch((error) => {
+                console.error("Erro ao buscar medico:", error);
+            });
+    }, []);
+
+
+      useEffect(() => {
         if (id) {
             axiosClient.get(`/consulta/show/${id}`)
-                .then(({ data }) => {
-                    setModel(data.data);
-                }).catch((error) => {
-                    console.log(error);
+            .then(({ data }) => {
+                const consulta = data.data;
+                setModel({
+                id: consulta.id || "",
+                dataHora: consulta.dataHora || "",
+                status: consulta.status || "",
+                motivo: consulta.motivo || "",
+                pacienteId: consulta.pacienteId?.toString() || "", 
+                medicoId: consulta.medicoId?.toString() || "",
                 });
+            })
+            .catch((error) => {
+                console.log("Erro ao carregar consulta:", error);
+            });
         }
     }, [id]);
 
@@ -93,9 +128,41 @@ export default function ConsultaFormUpdate(){
                                 mensagem={error.motivoMensagem}
                             />
                         </div>
-                        <button className="btn btn-edit" to="/consulta/index">
-                            Salvar
-                        </button>
+                        <div className="p-20">                          
+                        <Select
+                            id="pacienteId"
+                            value={model.pacienteId}
+                            handleChangeField={handleChangeField}
+                            handleBlurField={handleBlurField}
+                            error={error.pacienteId}
+                            mensagem={error.pacienteIdMensagem}
+                            options={[
+                                { value: "", label: "Selecione o Paciente da Consulta" },
+                                ...pacientes.map(paciente => ({
+                                    value: paciente.id,
+                                    label: `${paciente.id} - ${paciente.nome}`
+                                }))
+                            ]}
+                        />                     
+                        </div>
+                        <div className="p-20">                          
+                            <Select
+                                id="medicoId"
+                                value={model.medicoId}
+                                handleChangeField={handleChangeField}
+                                handleBlurField={handleBlurField}
+                                error={error.medicoId}
+                                mensagem={error.medicoIdMensagem}
+                                options={[
+                                    { value: "", label: "Selecione o Médico da consulta" },
+                                    ...medicos.map(medico => ({
+                                        value: medico.id,
+                                        label: `${medico.id} - ${medico.nome}`
+                                    }))
+                                ]}
+                            />                     
+                        </div>
+                        <button className="btn btn-edit" to="/consulta/index">Salvar</button>
                         <Link type="button" className="btn btn-cancel" to="/consulta/index">
                             Cancelar
                         </Link>

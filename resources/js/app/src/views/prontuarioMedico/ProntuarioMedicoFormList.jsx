@@ -6,11 +6,9 @@ export default function ProntuarioMedicoFormList()
 {
     const [prontuariosMedicos, setProntuariosMedicos] = useState([]);
 
-    // Função anômina na linguagem JavaScript
     const getProntuariosMedicos = () => {
         axiosClient.get('/prontuarioMedico/index')
             .then(({data}) => {
-                //console.log(data.data);
                 setProntuariosMedicos(data.data);
             })
             .catch((error)=>{
@@ -36,12 +34,12 @@ export default function ProntuarioMedicoFormList()
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Id</th>
                             <th>dataHora</th>
                             <th>descricao</th>
                             <th>prescricao</th>
-                            <th>pacienteID</th>
-                            <th>medicoID</th>
+                            <th>Nome do Paciente</th>
+                            <th>Nome do Médico</th>
                             <th className="center actions" colSpan="3">Ações</th>
                         </tr>
                     </thead>
@@ -54,8 +52,6 @@ export default function ProntuarioMedicoFormList()
                                         <td>{prontuarioMedico.dataHora}</td>
                                         <td>{prontuarioMedico.descricao}</td>
                                         <td>{prontuarioMedico.prescricao}</td>
-                                        <td>{prontuarioMedico.pacienteID}</td>
-                                        <td>{prontuarioMedico.medicoID}</td>
                                         <td>{prontuarioMedico.paciente?.nome}</td>
                                         <td>{prontuarioMedico.medico?.nome}</td>
                                         <td className="center actions">

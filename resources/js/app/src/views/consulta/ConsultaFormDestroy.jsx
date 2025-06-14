@@ -11,8 +11,8 @@ function ConsultaFormDestroy()
         dataHora:'',
         status:'',
         motivo:'',
-        medicoID:'',
-        pacienteID:'',
+        medicoId:'',
+        pacienteId:'',
         medico: {
           nome:'',
         },
@@ -35,13 +35,6 @@ function ConsultaFormDestroy()
             })
         },[id]);
     }
-
-    // Pega informações do Servidor
-    axiosClient.get(`/consulta/show/${id}`)
-                .then(({data})=>{
-                   console.log(data.data); 
-                })
-                .catch();
 
     // Função do tipo Anônima
     const onSubmit = (e) => {

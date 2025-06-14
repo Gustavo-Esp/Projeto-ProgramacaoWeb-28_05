@@ -20,7 +20,7 @@ class ConsultaController extends Controller
         $props = $request->get('props','id');
         $search = $request->get('search','');
 
-        $query = Consulta::select('id', 'dataHora', 'status', 'motivo', 'pacienteID', 'medicoID', 'created_at', 'updated_at')
+        $query = Consulta::with('paciente', 'medico')
             ->whereNull('deleted_at')
             ->orderBy($props, $dir);
 
@@ -47,19 +47,14 @@ class ConsultaController extends Controller
         ],200);
     }
 
-    public function create()
-    {
-        
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'dataHora'=>'required|string|max:6',
+            'dataHora'=>'required|date',
             'status'=>'required|string|max:20',
             'motivo'=>'required|string|max:200',
-            'pacienteID'=>'required|integer|exists:pacientes,id',
-            'medicoID'=>'required|integer|exists:medicos,id',
+            'pacienteId'=>'required|string|max:200',
+            'medicoId'=>'required|string|max:200',
         ]);
 
         if ($validator->fails()){
@@ -70,12 +65,12 @@ class ConsultaController extends Controller
             ],404);
         }
 
-        $data = Paciente::create([
+        $data = Consulta::create([
             'dataHora'=>$request->dataHora,
             'status'=>$request->status,
             'motivo'=>$request->motivo,
-            'pacienteID'=>$request->pacienteID,
-            'medicoID'=>$request->medicoID,
+            'pacienteId'=>$request->pacienteId,
+            'medicoId'=>$request->medicoId,
         ]);
 
         return response()->json([
@@ -85,37 +80,39 @@ class ConsultaController extends Controller
         ],201);
     }
 
-    public function show(Request $request, string $id)
-    {
-        $data = Consulta::findOrFail($id);
+    public function show(Request $request, string $id){
 
-        if(!$data){
-            throw new HttpResponseException(
-                response()->json('Consulta não localizada'),
-                404,
-            );
-        }
+        
+        try{ //o try catch é um tratamento de exceções (erros)
 
+            $data = Consulta::with('paciente','medico')->findOrFail($id);
+
+            if(!$data){
+                throw new HttpResponseException(
+                    response()->json('Consulta não localizada'),
+                    404,
+                );
+            }
+        } catch(HttpResponseException $e){
+            response()->json($e->getMessage());
+         }
+        
         return response()->json([
             'message'=>'Consulta localizada com sucesso',
             'data'=>$data,
             'status'=>200,
         ],200);
-    }
 
-    public function edit(string $id)
-    {
-       
     }
 
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(),[
-            'dataHora'=>'required|string|max:6',
+            'dataHora'=>'required|date',
             'status'=>'required|string|max:20',
             'motivo'=>'required|string|max:200',
-            'pacienteID'=>'required|int',
-            'medicoID'=>'required|int'
+            'pacienteId'=>'required|string|max:200',
+            'medicoId'=>'required|string|max:200',
         ]);
 
         if ($validator->fails()){
@@ -131,7 +128,7 @@ class ConsultaController extends Controller
         if(!$data){
             return response()->json([
                 'message'=>'Consulta não localizada',
-                'data'=>$data,
+                'data'=>$id,
                 'status'=>404,
             ],404);
         }
@@ -139,12 +136,8 @@ class ConsultaController extends Controller
         $data->dataHora = $request->dataHora ?? $data->dataHora;
         $data->status = $request->status ?? $data->status;
         $data->motivo = $request->motivo ?? $data->motivo;
-        $data->pacienteID = $request->pacienteID ?? $data->pacienteID;
-        $data->medicoID = $request->medicoID ?? $data->medicoID;
-
-        /*if ($request->has('password')){
-            $data->password = Hash::make($request->password);
-        }*/
+        $data->pacienteId = $request->pacienteId ?? $data->pacienteId;
+        $data->medicoId = $request->medicoId ?? $data->medicoId;
 
         $data->save();
 

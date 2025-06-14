@@ -6,12 +6,10 @@ export default function MedicoFormList()
 {
     const [medicos, setMedicos] = useState([]);
 
-    // Função anômina na linguagem JavaScript
     const getMedicos = () => {
         axiosClient
             .get('/medico/index')
             .then(({data}) => {
-                //console.log(data.data);
                 setMedicos(data.data);
             })
             .catch((error)=>{
@@ -37,7 +35,7 @@ export default function MedicoFormList()
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Id</th>
                             <th>Nome</th>
                             <th>Especialidade</th>
                             <th>CRM</th>

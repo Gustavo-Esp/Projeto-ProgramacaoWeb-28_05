@@ -6,12 +6,10 @@ export default function PagamentoFormList()
 {
     const [pagamentos, setPagamentos] = useState([]);
 
-    // Função anômina na linguagem JavaScript
     const getPagamentos = () => {
         axiosClient
             .get('/pagamento/index')
             .then(({data}) => {
-                //console.log(data.data);
                 setPagamentos(data.data);
             })
             .catch((error)=>{
@@ -37,12 +35,12 @@ export default function PagamentoFormList()
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Id</th>
                             <th>dataHora</th>
                             <th>valor</th>
                             <th>metodoPagamento</th>
-                            <th>pacienteID</th>
-                            <th>consultaID</th>
+                            <th>Nome do</th>
+                            <th>Id da Consulta</th>
                             <th className="center actions" colSpan="3">Ações</th>
                         </tr>
                     </thead>
@@ -55,10 +53,8 @@ export default function PagamentoFormList()
                                         <td>{pagamento.dataHora}</td>
                                         <td>{pagamento.valor}</td>
                                         <td>{pagamento.metodoPagamento}</td>
-                                        <td>{pagamento.pacienteID}</td>
-                                        <td>{pagamento.consultaID}</td>
                                         <td>{pagamento.paciente?.nome}</td>
-                                        <td>{pagamento.consulta?.nome}</td>
+                                        <td>{pagamento.consulta?.id}</td>
                                         <td className="center actions">
                                             <Link className="btn-show" to={`/pagamento/show/${pagamento.id}`}>Show</Link>
                                         </td>

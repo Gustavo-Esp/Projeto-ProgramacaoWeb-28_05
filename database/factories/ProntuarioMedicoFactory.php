@@ -20,8 +20,8 @@ class ProntuarioMedicoFactory extends Factory
            'dataHora' => fake()->dateTime()->format('Y-m-d H:i:s'),
             'descricao'=>fake()->descricao(),
             'prescricao'=>fake()->prescricao(),
-            'pacienteID'=>fake()->numberBetween(1, 100),
-            'medicoID'=>fake()->numberBetween(1, 50),
+            'pacienteId'=>fake()->numberBetween(1, 100),
+            'medicoId'=>fake()->numberBetween(1, 50),
         ];
     }
 }

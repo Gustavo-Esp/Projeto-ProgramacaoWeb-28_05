@@ -20,8 +20,8 @@ class PagamentoFactory extends Factory
             'dataHora' => fake()->dateTime()->format('Y-m-d H:i:s'),
             'valor'=>fake()->randomFloat(2, 50, 500), 
             'metodoPagamento'=>fake()->metodoPagamento(),
-            'pacienteID'=>fake()->numberBetween(1, 100),
-            'consultaID'=>fake()->numberBetween(1, 50),
+            'pacienteId'=>fake()->numberBetween(1, 100),
+            'consultaId'=>fake()->numberBetween(1, 50),
         ];
     }
 }

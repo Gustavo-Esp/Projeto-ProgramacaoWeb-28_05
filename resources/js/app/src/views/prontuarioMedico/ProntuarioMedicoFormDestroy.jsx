@@ -11,8 +11,8 @@ function ProntuarioMedicoFormDestroy()
         dataHora:'',
         descricao:'',
         prescricao:'',
-        medicoID:'',
-        pacienteID:'',
+        medicoId:'',
+        pacienteId:'',
         medico: {
           nome:'',
         },
@@ -35,13 +35,6 @@ function ProntuarioMedicoFormDestroy()
             })
         },[id]);
     }
-
-    // Pega informações do Servidor
-    axiosClient.get(`/prontuarioMedico/show/${id}`)
-                .then(({data})=>{
-                   console.log(data.data); 
-                })
-                .catch();
 
     // Função do tipo Anônima
     const onSubmit = (e) => {

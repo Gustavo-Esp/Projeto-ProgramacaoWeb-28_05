@@ -15,14 +15,14 @@ function PacienteFormStore()
         formValid,
         handleChangeField,
         handleBlurField
-    } = useValidarDadosPaciente();
+    } = useValidarDadosPaciente("create");
 
     // Função do tipo Anônima
     const onSubmit = (e) => {
         e.preventDefault();
         if (formValid()) {
-            console.log("Formulário inválido");
-            axiosClient.post(`/paciente/store`, paciente)
+            console.log("Formulário válido");
+            axiosClient.post(`/paciente/store`, model)
             .then(() =>{
                 setModel({});
                 console.log('Paciente incluído com sucesso');
@@ -55,7 +55,7 @@ function PacienteFormStore()
                         <div className ="p-20">
                             <Input 
                                 id="dataNascimento"
-                                type="text"
+                                type="date"
                                 value={model.dataNascimento}
                                 placeholder="Data de Nascimento do Paciente"
                                 handleChangeField={handleChangeField}
@@ -100,7 +100,7 @@ function PacienteFormStore()
                                 mensagem={error.emailMensagem}
                             />
                         </div>
-                        <button className="btn btn-edit">Salvar</button>
+                        <button className="btn btn-add" to="/paciente/index">Salvar</button>
                         <Link
                             type='button' 
                             className='btn btn-cancel'

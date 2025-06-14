@@ -20,7 +20,7 @@ function PacienteFormDestroy()
     if (id)
     {
         useEffect(() => {
-            axiosClient.get(`/user/show/${id}`)
+            axiosClient.get(`/paciente/show/${id}`)
             .then(({data}) =>{
                 setPaciente(data.data);
                 console.log(data.data);
@@ -29,13 +29,6 @@ function PacienteFormDestroy()
             })
         },[id]);
     }
-
-    // Pega informações do Servidor
-    axiosClient.get(`/paciente/show/${id}`)
-                .then(({data})=>{
-                   console.log(data.data); 
-                })
-                .catch();
 
     // Função do tipo Anônima
     const onSubmit = (e) => {

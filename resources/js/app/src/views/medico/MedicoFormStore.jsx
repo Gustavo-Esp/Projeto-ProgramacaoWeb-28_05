@@ -15,14 +15,14 @@ function MedicoFormStore()
         formValid,
         handleChangeField,
         handleBlurField
-    } = useValidarDadosMedico();
+    } = useValidarDadosMedico("create");
 
     // Função do tipo Anônima
     const onSubmit = (e) => {
         e.preventDefault();
         if (formValid()) {
-            console.log("Formulário inválido");
-            axiosClient.post(`/medico/store`, medico)
+            console.log("Formulário válido");
+            axiosClient.post(`/medico/store`, model)
             .then(() =>{
                 setModel({});
                 console.log('Medico incluído com sucesso');
@@ -100,7 +100,7 @@ function MedicoFormStore()
                                 mensagem={error.emailMensagem}
                             />
                         </div>
-                        <button className="btn btn-edit">Salvar</button>
+                        <button className="btn btn-add" to="/medico/index">Salvar</button>
                         <Link
                             type='button' 
                             className='btn btn-cancel'

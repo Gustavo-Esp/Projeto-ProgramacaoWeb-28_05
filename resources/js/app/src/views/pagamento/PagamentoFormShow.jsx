@@ -11,8 +11,8 @@ function PagamentoFormShow()
         dataHora:'',
         valor:'',
         metodoPagamento:'',
-        consultaID:'',
-        pacienteID:'',
+        consultaId:'',
+        pacienteId:'',
         consulta: {
           dataHora:'',
         },
@@ -47,9 +47,13 @@ function PagamentoFormShow()
         <Fragment>
             <div className="display">
                 <div className="card animated fadeInDown">
-                    {pagamento.id && <h1>data do pagamento: { pagamento.dataHora}</h1> && <h1>Nome do Paciente: { pagamento.paciente?.nome}</h1>}
+                    {pagamento.id && (
+                        <div>
+                            <h1>Data do pagamento: {pagamento.dataHora}</h1>
+                            <h1>Nome do Paciente: {pagamento.paciente?.nome}</h1>
+                     </div>
+                    )}
                 </div>
-
                 <form>
                     <input defaultValue={pagamento.dataHora} placeholder="Data e hora do pagamento" readOnly={true}/>
                     <input defaultValue={pagamento.valor} placeholder="Valor do pagamento" readOnly={true}/>

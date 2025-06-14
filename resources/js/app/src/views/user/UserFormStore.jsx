@@ -1,4 +1,4 @@
-import React, { Fragment} from 'react'
+import { Fragment} from 'react'
 import axiosClient from '../../axiosClient';
 import { Link, useNavigate} from 'react-router-dom';
 import { useValidarDadosUsuario } from '../../rules/UserValidationRules';
@@ -15,14 +15,14 @@ function UserFormStore()
         formValid,
         handleChangeField,
         handleBlurField
-    } = useValidarDadosUsuario();
+    } = useValidarDadosUsuario("create");
 
     // Função do tipo Anônima
     const onSubmit = (e) => {
         e.preventDefault();
         if (formValid()) {
-            console.log("Formulário inválido");
-            axiosClient.post(`/user/store`, user)
+            console.log("Formulário válido");
+            axiosClient.post(`/user/store`, model)
             .then(() =>{
                 setModel({});
                 console.log('Usuário incluído com sucesso');
@@ -31,11 +31,6 @@ function UserFormStore()
                 console.log(error);
             })
         }
-    }
-
-    const onCancel = (e) => {
-        //e.preventDefault();
-        navigate('/user/index');
     }
 
     return(
@@ -81,7 +76,7 @@ function UserFormStore()
                                 mensagem={error.passwordMensagem}
                             />
                         </div>
-                        <button className="btn btn-edit">Salvar</button>
+                        <button className="btn btn-add" to="/user/index">Salvar</button>
                         <Link
                             type='button' 
                             className='btn btn-cancel'
@@ -94,5 +89,4 @@ function UserFormStore()
         </Fragment>
     )
 }
-
 export default UserFormStore

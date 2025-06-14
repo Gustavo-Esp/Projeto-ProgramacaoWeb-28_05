@@ -21,7 +21,14 @@ class PacienteFactory extends Factory
             'dataNascimento'=>fake()->date('Y-m-d'),
             'endereco'=>fake()->address(),
             'telefone'=>fake()->tollFreePhoneNumber(),
-            'email'=>fake()->safeEmail(),
+            'email_verified_at'=> now(),
         ];
+    }
+
+    public function unverified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
+        ]);
     }
 }

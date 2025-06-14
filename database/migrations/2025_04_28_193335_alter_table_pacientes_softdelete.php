@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('medicos', function (Blueprint $table) {
-            $table->id();
-            $table->string('nome');
-            $table->string('especialidade');
-            $table->string('crm');
-            $table->string('telefone');
-            $table->string('email');
-            $table->timestamps();
+        Schema::table('pacientes', function(Blueprint $table){
+            $table->softDeletes(); //essa função cria um campo de deletar
         });
     }
 
@@ -27,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('medicos');
+        Schema::table('pacientes', function(Blueprint $table){
+            $table->softDeletes(); //essa função cria um campo de deletar
+        });
     }
 };

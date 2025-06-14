@@ -117,7 +117,7 @@ export default function PacienteFormUpdate(){
                                 mensagem={error.emailMensagem}
                             />
                         </div>
-                        <button className="btn btn-edit" to="/paciente/index">
+                        <button className="btn btn-edit">
                             Salvar
                         </button>
                         <Link type="button" className="btn btn-cancel" to="/paciente/index">

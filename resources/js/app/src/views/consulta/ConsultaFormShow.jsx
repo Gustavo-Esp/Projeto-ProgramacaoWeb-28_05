@@ -11,8 +11,8 @@ function ConsultaFormShow()
         dataHora:'',
         status:'',
         motivo:'',
-        medicoID:'',
-        pacienteID:'',
+        medicoId:'',
+        pacienteId:'',
         medico: {
           nome:'',
         },
@@ -24,18 +24,17 @@ function ConsultaFormShow()
     const {id} = useParams();
     console.log(id);
 
-    if (id)
-    {
-        useEffect(() => {
+    useEffect(()=>{
+        if (id){
+            
             axiosClient.get(`/consulta/show/${id}`)
-            .then(({data}) =>{
+            .then(({data})=>{
                 setConsulta(data.data);
-                console.log(data.data);
             }).catch((error)=>{
                 console.log(error);
-            })
-        },[id]);
-    }
+            });
+        }
+    },[id]);
 
     // Função do tipo Anônima
     const onSubmit = (e) => {
@@ -47,7 +46,12 @@ function ConsultaFormShow()
         <Fragment>
             <div className="display">
                 <div className="card animated fadeInDown">
-                    {consulta.id && <h1>data da consulta: { consulta.dataHora}</h1> && <h1>medico atendente: { consulta.medico?.nome}</h1>}
+                    {consulta.id && (
+                    <>
+                        <h1>Data da consulta: {consulta.dataHora}</h1>
+                        <h1>Médico atendente: {consulta.medico?.nome}</h1>
+                    </>
+                    )}
                 </div>
 
                 <form>

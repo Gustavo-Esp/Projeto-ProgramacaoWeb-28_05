@@ -20,7 +20,7 @@ class ProntuarioMedicoController extends Controller
         $props = $request->get('props','id');
         $search = $request->get('search','');
 
-        $query = ProntuarioMedico::select('id', 'dataHora', 'descricao', 'prescricao', 'pacienteID', 'medicoID', 'created_at', 'updated_at')
+        $query = ProntuarioMedico::with('paciente', 'medico')
             ->whereNull('deleted_at')
             ->orderBy($props, $dir);
 
@@ -33,7 +33,7 @@ class ProntuarioMedicoController extends Controller
         $totalPages = ceil($total / $pageSize);
        
         return response()->json([
-            'message'=>'Relatório de prontuários médicos',
+            'message'=>'Relatório de Prontuários Médicos',
             'status'=>200,
             'page' =>$page,
             'pageSize' =>$pageSize,
@@ -47,19 +47,14 @@ class ProntuarioMedicoController extends Controller
         ],200);
     }
 
-    public function create()
-    {
-        
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'dataHora'=>'required|string|max:6',
-            'descricao'=>'required|string|max:500',
-            'prescricao'=>'required|string|max:500',
-            'pacienteID'=>'required|integer|exists:pacientes,id',
-            'medicoID'=>'required|integer|exists:medicos,id',
+            'dataHora'=>'required|date',
+            'descricao'=>'required|string|max:20',
+            'prescricao'=>'required|string|max:200',
+            'pacienteId'=>'required|string|max:200',
+            'medicoId'=>'required|string|max:200',
         ]);
 
         if ($validator->fails()){
@@ -70,12 +65,12 @@ class ProntuarioMedicoController extends Controller
             ],404);
         }
 
-        $data = Medico::create([
+        $data = ProntuarioMedico::create([
             'dataHora'=>$request->dataHora,
             'descricao'=>$request->descricao,
             'prescricao'=>$request->prescricao,
-            'pacienteID'=>$request->pacienteID,
-            'medicoID'=>$request->medicoID,
+            'pacienteId'=>$request->pacienteId,
+            'medicoId'=>$request->medicoId,
         ]);
 
         return response()->json([
@@ -85,37 +80,39 @@ class ProntuarioMedicoController extends Controller
         ],201);
     }
 
-    public function show(Request $request, string $id)
-    {
-        $data = ProntuarioMedico::findOrFail($id);
+    public function show(Request $request, string $id){
 
-        if(!$data){
-            throw new HttpResponseException(
-                response()->json('Prontuário Médico não localizado'),
-                404,
-            );
-        }
+        
+        try{ //o try catch é um tratamento de exceções (erros)
 
+            $data = ProntuarioMedico::with('paciente','medico')->findOrFail($id);
+
+            if(!$data){
+                throw new HttpResponseException(
+                    response()->json('Prontuário Médico não localizado'),
+                    404,
+                );
+            }
+        } catch(HttpResponseException $e){
+            response()->json($e->getMessage());
+         }
+        
         return response()->json([
             'message'=>'Prontuário Médico localizado com sucesso',
             'data'=>$data,
             'status'=>200,
         ],200);
-    }
 
-    public function edit(string $id)
-    {
-       
     }
 
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(),[
-            'dataHora'=>'required|string|max:6',
-            'descricao'=>'required|string|max:500',
-            'prescricao'=>'required|string|max:500',
-            'pacienteID'=>'required|integer|exists:pacientes,id',
-            'medicoID'=>'required|integer|exists:medicos,id'
+            'dataHora'=>'required|date',
+            'descricao'=>'required|string|max:20',
+            'prescricao'=>'required|string|max:200',
+            'pacienteId'=>'required|string|max:200',
+            'medicoId'=>'required|string|max:200',
         ]);
 
         if ($validator->fails()){
@@ -131,7 +128,7 @@ class ProntuarioMedicoController extends Controller
         if(!$data){
             return response()->json([
                 'message'=>'Prontuário Médico não localizado',
-                'data'=>$data,
+                'data'=>$id,
                 'status'=>404,
             ],404);
         }
@@ -139,12 +136,8 @@ class ProntuarioMedicoController extends Controller
         $data->dataHora = $request->dataHora ?? $data->dataHora;
         $data->descricao = $request->descricao ?? $data->descricao;
         $data->prescricao = $request->prescricao ?? $data->prescricao;
-        $data->pacienteID = $request->pacienteID ?? $data->pacienteID;
-        $data->medicoID = $request->medicoID ?? $data->medicoID;
-
-        /*if ($request->has('password')){
-            $data->password = Hash::make($request->password);
-        }*/
+        $data->pacienteId = $request->pacienteId ?? $data->pacienteId;
+        $data->medicoId = $request->medicoId ?? $data->medicoId;
 
         $data->save();
 
@@ -163,7 +156,7 @@ class ProntuarioMedicoController extends Controller
 
         if(!$data){
             return response()->json([
-                'message'=>'Prontuario Médico não localizado',
+                'message'=>'Prontuário Médico não localizado',
                 'data'=>$data,
                 'status'=>404,
             ],404);
@@ -172,7 +165,7 @@ class ProntuarioMedicoController extends Controller
         $data->delete();
 
         return response()->json([
-            'message'=>'Prontuario Médico excluído com sucesso',
+            'message'=>'Prontuário Médico excluído com sucesso',
             'data'=>$data,
             'status'=>200,
         ],200);

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\MedicoController;
 use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\PagamentoController;
 use App\Http\Controllers\Api\ProntuarioMedicoController;
+use App\Http\Controllers\Api\LoginController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();

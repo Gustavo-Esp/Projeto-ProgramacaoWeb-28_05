@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('prontuariosMedicos', function (Blueprint $table) {
-            $table->increments('id')->usigned();
-            $table->datetime('dataHora');
-            $table->string('descricao', 500);
-            $table->string('prescricao', 500);
-             $table->foreignId('pacienteID')
-                ->constrained('pacientes') // on(nome da tabela de origem)
-                ->onDelete('cascade'); 
-            $table->foreignId('medicoID')
-                ->constrained('medicos') // on(nome da tabela de origem)
-                ->onDelete('cascade'); 
+            $table->increments('id');
+            $table->date('dataHora');
+            $table->string('descricao');
+            $table->string('prescricao');
+            $table->foreignId('pacienteId')
+                ->constrained('pacientes')
+                ->onDelete('cascade');
+            $table->foreignId('medicoId')
+                ->constrained('medicos')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
