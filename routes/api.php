@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\PagamentoController;
 use App\Http\Controllers\Api\ProntuarioMedicoController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\api\RegisterUserController;
+use App\Http\Controllers\api\VerifyUserAccount;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -34,8 +36,15 @@ Route::get('/prontuarioMedico', function (Request $request) {
     return $request->prontuarioMedico();
 })->middleware('auth:sanctum');
 
+Route::post('/signup',[RegisterUserController::class,'signup']); 
+Route::get('/verify_account',[VerifyUserAccount::class,'verifyUserAccount']); //
+Route::post('/updatePassword',[ResetPasswordController::class,'updatePassword']); //
+Route::post('/forgotPassword',[ForgotPasswordController::class,'forgotPassword']);
+
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
+Route::post('/signup',[RegisterUserController::class,'signup']); 
+Route::get('/verify_account',[VerifyUserAccount::class,'verifyUserAccount']); 
 
 # get(endereço digitado, método a ser usado)
     Route::prefix('/user')->group(function (){
@@ -44,6 +53,10 @@ Route::post('/logout', [LoginController::class, 'logout']);
     Route::delete('/destroy/{id}', [UsuarioController::class, 'destroy']);
     Route::post('/store', [UsuarioController::class, 'store']);
     Route::put('/update/{id}', [UsuarioController::class, 'update']);
+});
+
+    Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/changePassword', [ResetPasswordController::class, 'changePassword']);
 });
 
     Route::prefix('/paciente')->group(function (){

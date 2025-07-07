@@ -43,7 +43,7 @@ import Login from '../views/login/Login'
 import Signup from '../views/login/Signup'
 import UpdatePassword from '../views/login/UpdatePassword'
 import ForgotPassword from '../views/login/ForgotPassword'
-import ContextProvider from '../context/ContextProvider'
+import ChangePassword from '../views/login/ChangePassword'
  
  const Rotas = () => {
    return (
@@ -53,6 +53,7 @@ import ContextProvider from '../context/ContextProvider'
         <Route path='/register' element={<Signup/>}/>
         <Route path='/updatepassword' element={<UpdatePassword/>}/>
         <Route path='/forgotpassword' element={<ForgotPassword/>}/>
+        <Route path='/changepassword' element={<ChangePassword/>}/>
         <Route element={<Layout/>}>
         <Route path='/dashboard' element={<Dashboard/>}/>
 

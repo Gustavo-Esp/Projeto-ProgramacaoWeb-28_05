@@ -40,16 +40,18 @@ export default function DefaultLayout({children})
             <Link to="/pagamento/index"> Pagamentos </Link>
             <Link to="/prontuarioMedico/index"> Prontuários </Link>
         </aside>
-        <div className='content'>
-            <header>
-                <div className = 'header'> 
-                    Sistema de Clínica Médica
-                </div>
-                <div>
-                    { user.name } &nbsp; &nbsp;
-                    <a onClick={onLogout} className='btn-logout' href="#"> Logout </a>
-                </div>
-            </header>
+         <div className='content'>
+          <header>
+            <div className='header'>
+              Sistema de gestão de Consultas
+            </div>
+            <div>
+              {user.name} &nbsp; |  &nbsp;
+              <Link to="/changePassword" className="btn-link" href='#'>Alterar Senha</Link>
+              &nbsp;  |&nbsp;
+              <a onClick={onLogout} className='btn-logout' href='#'>Logout</a>
+            </div>
+          </header>
             <main className='main-content'>
                 { children }
             </main>
